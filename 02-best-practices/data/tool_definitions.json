@@ -1,0 +1,158 @@
+[
+    {
+        "toolSpec": {
+            "name": "search_knowledge_base",
+            "description": "Search the CloudCommerce knowledge base for company policies, procedures, product information, and frequently asked questions. This tool has access to comprehensive documentation covering all aspects of our e-commerce platform including return policies, shipping procedures, payment methods, account management, troubleshooting guides, and product specifications. Use this tool whenever customers ask about: (1) Return and refund policies for different product categories, (2) Shipping options, delivery times, and tracking information, (3) Payment methods, billing issues, and transaction security, (4) Account creation, password resets, and profile management, (5) Product specifications, features, and compatibility, (6) Order modification and cancellation procedures, (7) Warranty information and product support, (8) Promotional offers and discount policies. The search uses semantic matching to find the most relevant information from our documentation, so you can use natural language queries. Always include specific keywords from the customer's question to get the most accurate results.",
+            "inputSchema": {
+                "json": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "The search query to find relevant information in the knowledge base. Use specific keywords and phrases from the customer's question. Examples: 'return policy for electronics', 'international shipping to Canada', 'credit card payment declined', 'reset account password', 'product warranty coverage'."
+                        },
+                        "category": {
+                            "type": "string",
+                            "description": "Optional category filter to narrow search results. Valid categories: 'returns', 'shipping', 'payments', 'accounts', 'products', 'orders', 'technical'. Leave empty to search all categories.",
+                            "enum": ["returns", "shipping", "payments", "accounts", "products", "orders", "technical", ""]
+                        }
+                    },
+                    "required": ["query"]
+                }
+            }
+        }
+    },
+    {
+        "toolSpec": {
+            "name": "lookup_order",
+            "description": "Look up detailed order information including order status, tracking numbers, estimated delivery dates, shipping carrier information, order contents, payment details, and delivery address. This tool retrieves real-time order data from our order management system. Use this tool when customers provide an order ID or when they ask about: (1) Order status and current location in fulfillment process, (2) Tracking information for shipped orders, (3) Estimated or actual delivery dates, (4) Order contents and quantities, (5) Shipping method and carrier information, (6) Delivery address confirmation, (7) Payment method and transaction details, (8) Order modifications or cancellation status. Order IDs follow the format 'ORD-XXXXX' where X is a digit (e.g., ORD-12345, ORD-67890). If a customer doesn't provide an order ID, ask them for it before calling this tool. The tool will return comprehensive order details including all line items, prices, discounts applied, tax amounts, shipping costs, and full tracking history if the order has shipped.",
+            "inputSchema": {
+                "json": {
+                    "type": "object",
+                    "properties": {
+                        "order_id": {
+                            "type": "string",
+                            "description": "The unique order identifier in format ORD-XXXXX. Example: ORD-12345. This is required to look up order information.",
+                            "pattern": "^ORD-[0-9]{5}$"
+                        },
+                        "include_history": {
+                            "type": "boolean",
+                            "description": "Whether to include full order history including status changes, tracking updates, and customer service interactions. Set to true for detailed information, false for basic status only. Default: false.",
+                            "default": false
+                        }
+                    },
+                    "required": ["order_id"]
+                }
+            }
+        }
+    },
+    {
+        "toolSpec": {
+            "name": "create_support_ticket",
+            "description": "Create a support ticket for issues that require escalation to specialized teams or cannot be resolved immediately through chat. This tool creates a tracked ticket in our support system with priority routing based on issue type. Use this tool when: (1) Customer reports a technical issue that requires engineering investigation (website bugs, payment processing errors, checkout failures), (2) Customer requests account actions that require verification (account deletion, data export requests, suspicious activity reports), (3) Order issues that require warehouse or logistics team intervention (damaged items, missing packages, shipping errors), (4) Refund requests exceeding standard policy limits (expired return windows, custom items, high-value orders), (5) Customer is frustrated or unsatisfied after multiple attempts to resolve issue, (6) Issue requires coordination across multiple departments. The ticket will be assigned to the appropriate team based on category and priority level. Customers receive a ticket ID and estimated response time. Include detailed information about the issue, steps already taken to resolve it, and any relevant order or account information.",
+            "inputSchema": {
+                "json": {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "description": "The support ticket category for proper routing. This determines which specialized team receives the ticket.",
+                            "enum": ["technical", "account", "order_fulfillment", "refunds", "shipping", "product_quality", "billing", "escalation"]
+                        },
+                        "priority": {
+                            "type": "string",
+                            "description": "Ticket priority level. High: Customer cannot use service, financial impact, or safety concern. Medium: Significant inconvenience but workarounds available. Low: General questions or minor issues.",
+                            "enum": ["low", "medium", "high"],
+                            "default": "medium"
+                        },
+                        "subject": {
+                            "type": "string",
+                            "description": "Brief subject line summarizing the issue (max 100 characters). Example: 'Payment declined despite valid card', 'Package marked delivered but not received'."
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "Detailed description of the issue including: (1) What happened, (2) When it occurred, (3) Steps customer has already taken, (4) Impact on customer, (5) Any error messages or reference numbers. Be specific and include relevant details."
+                        },
+                        "customer_email": {
+                            "type": "string",
+                            "description": "Customer's email address for ticket notifications and follow-up communication.",
+                            "format": "email"
+                        },
+                        "order_id": {
+                            "type": "string",
+                            "description": "Related order ID if applicable (format: ORD-XXXXX). Include if the issue relates to a specific order.",
+                            "pattern": "^ORD-[0-9]{5}$"
+                        }
+                    },
+                    "required": ["category", "subject", "description", "customer_email"]
+                }
+            }
+        }
+    },
+    {
+        "toolSpec": {
+            "name": "check_inventory",
+            "description": "Check real-time inventory availability for products across all warehouses and fulfillment centers. This tool queries our inventory management system to provide accurate stock levels, warehouse locations, and estimated restocking dates for out-of-stock items. Use this tool when: (1) Customer asks if a product is in stock, (2) Customer wants to know when an out-of-stock item will be available, (3) Determining if we can fulfill an order for specific quantities, (4) Checking availability for expedited shipping options, (5) Finding alternative warehouse locations for faster delivery. The tool returns inventory counts by warehouse location, allowing you to suggest the fastest shipping option based on proximity to the customer's delivery address. For backordered items, it provides estimated restock dates based on purchase orders from suppliers.",
+            "inputSchema": {
+                "json": {
+                    "type": "object",
+                    "properties": {
+                        "product_sku": {
+                            "type": "string",
+                            "description": "Product SKU (Stock Keeping Unit) identifier. Example: SKU-ELECTRONICS-12345, SKU-CLOTHING-SHIRTS-67890. This is the unique product identifier in our system."
+                        },
+                        "quantity": {
+                            "type": "integer",
+                            "description": "Quantity customer wants to order. Used to check if sufficient stock is available. Default: 1.",
+                            "minimum": 1,
+                            "default": 1
+                        },
+                        "zip_code": {
+                            "type": "string",
+                            "description": "Customer's delivery zip code. Used to find nearest warehouse with stock and estimate delivery time. Optional but recommended for accurate delivery estimates.",
+                            "pattern": "^[0-9]{5}(-[0-9]{4})?$"
+                        }
+                    },
+                    "required": ["product_sku"]
+                }
+            }
+        }
+    },
+    {
+        "toolSpec": {
+            "name": "process_return",
+            "description": "Initiate a product return and generate a prepaid return shipping label for the customer. This tool validates return eligibility based on our return policies, creates a return merchandise authorization (RMA) number, and emails a printable return label to the customer. Use this tool when: (1) Customer wants to return an item within the return window, (2) Customer received a defective or damaged product, (3) Customer received the wrong item, (4) Customer is unsatisfied with their purchase and eligible for return. The tool automatically checks return eligibility including purchase date, product category, return window compliance, and return reason validity. For approved returns, it generates an RMA number and shipping label. For denied returns, it provides the specific policy reason. Note: This tool only initiates the return process. Refunds are processed after the warehouse receives and inspects the returned item.",
+            "inputSchema": {
+                "json": {
+                    "type": "object",
+                    "properties": {
+                        "order_id": {
+                            "type": "string",
+                            "description": "Order ID containing the item to return (format: ORD-XXXXX).",
+                            "pattern": "^ORD-[0-9]{5}$"
+                        },
+                        "item_sku": {
+                            "type": "string",
+                            "description": "SKU of the specific item being returned. Required if order contains multiple items."
+                        },
+                        "return_reason": {
+                            "type": "string",
+                            "description": "Reason for return. This affects processing and refund eligibility.",
+                            "enum": ["defective", "wrong_item", "not_as_described", "changed_mind", "better_price_found", "damaged_in_shipping", "no_longer_needed"]
+                        },
+                        "condition": {
+                            "type": "string",
+                            "description": "Condition of item being returned. Items must be unused with original packaging for full refund (exceptions: defective/wrong item).",
+                            "enum": ["unopened", "opened_unused", "used", "defective", "damaged"]
+                        },
+                        "comments": {
+                            "type": "string",
+                            "description": "Additional details about the return. For defective items, describe the issue. For wrong items, describe what was received vs ordered."
+                        }
+                    },
+                    "required": ["order_id", "item_sku", "return_reason", "condition"]
+                }
+            }
+        }
+    }
+]

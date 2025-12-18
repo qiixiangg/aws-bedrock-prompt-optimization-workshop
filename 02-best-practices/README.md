@@ -12,20 +12,13 @@ Master prompt caching and optimization through hands-on implementation with imme
 
 ### **01-prompt-caching.ipynb** (2.5 hours)
 
-Learn caching patterns and strategy principles with immediate hands-on practice.
+Master caching patterns and strategy principles through runnable code examples.
 
-**Part A: Caching Patterns** (90 min)
-- Pattern 1: Single checkpoint → Code → 🔬 Practice (30 min)
-- Pattern 2: Multi-checkpoint → Code → 🔬 Practice (40 min)
-- Pattern 3: Simplified caching → Code → 🔬 Practice (20 min)
-
-**Part B: Strategy Principles** (60 min)
-- Principle 1: Longest prefix → Code → 🔬 Practice (15 min)
-- Principle 2: Static/dynamic separation → Code → 🔬 Practice (15 min)
-- Principle 3: Monitor performance → Code → 🔬 Practice (20 min)
-- Principle 4: Cache warm-up → Code → 🔬 Practice (10 min)
-
-**7 integrated exercises** for immediate reinforcement.
+**What You'll Build**:
+- Multi-checkpoint customer support agent with tools and conversation history
+- Cache performance monitor with hit rate calculations
+- Static/dynamic content analyzer to prevent cache thrashing
+- Production cache warm-up strategies
 
 ---
 
@@ -34,11 +27,32 @@ Learn caching patterns and strategy principles with immediate hands-on practice.
 Learn manual and automated optimization with comprehensive hands-on lab.
 
 **Sections**:
-1. Decision Framework (15 min)
-2. Manual Optimization: Clear instructions, few-shot examples, Chain-of-Thought, structured output (45 min)
-3. Automated Optimization: Bedrock API, Metaprompting, Data-Aware, DSPy (30 min)
-4. 🔬 Optimization Lab: Apply techniques systematically (45 min)
-5. Best Practices: Model selection, version control, monitoring (20 min)
+1. Decision Framework
+2. Manual Optimization: Clear instructions, few-shot examples, Chain-of-Thought, structured output
+3. Automated Optimization: Bedrock API, Metaprompting, Data-Aware, DSPy
+4. 🔬 Optimization Lab: Apply techniques systematically
+5. Best Practices: Model selection, version control, monitoring
+
+---
+
+## Key Concepts
+
+**Caching Patterns**:
+- API syntax: Converse vs Invoke Model caching
+- Multi-checkpoint caching: Tools → System → Messages
+- Cache invalidation: Prefix matching mechanics
+- Bedrock metrics: `cacheReadInputTokens`, `cacheWriteInputTokens`, `inputTokens`
+
+**Strategy Principles**:
+- Checkpoint strategies: When to use single vs multi-checkpoints
+- Static/dynamic separation: Prevent cache thrashing
+- Performance monitoring: Calculate cache hit rate
+- Cache warm-up: Pre-warm for production deployments
+
+**Optimization Techniques**:
+- Manual: Clear instructions, few-shot examples, Chain-of-Thought, structured output
+- Automated: Bedrock Optimization API, Metaprompting, Data-Aware, DSPy
+- Best Practices: Model selection, version control, monitoring
 
 ---
 
@@ -54,10 +68,10 @@ Learn manual and automated optimization with comprehensive hands-on lab.
 
 Ready for Part 3 when you can:
 
-- [ ] Implement all 3 caching patterns with boto3 Converse API
-- [ ] Calculate cache hit rate and cost-effectiveness
-- [ ] Apply manual optimization techniques systematically
-- [ ] Compare manual vs. automated optimization
+- [ ] Implement multi-checkpoint caching with boto3 Converse API
+- [ ] Separate static from dynamic content to prevent cache thrashing
+- [ ] Calculate cache hit rate and debug common issues
+- [ ] Apply manual and automated optimization techniques
 - [ ] Choose appropriate model tier for tasks
 
 ---
