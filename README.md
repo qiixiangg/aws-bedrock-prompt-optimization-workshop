@@ -50,16 +50,11 @@ Master caching patterns and systematic optimization with hands-on practice.
 
 **Notebooks**:
 - `01-prompt-caching.ipynb` (2.5 hours)
-  - **Caching Patterns**: Pattern 1, 2, 3 with immediate hands-on practice after each
-  - **Strategy Principles**: Longest prefix, static/dynamic separation, monitoring, warm-up
-  - **7 integrated exercises**: Learn → Practice flow for better retention
+  - **Part A: Caching Fundamentals** - API syntax, multi-checkpoint patterns, cache invalidation
+  - **Part B: Strategy Principles** - Checkpoint strategies, static/dynamic separation, monitoring, warm-up
 
 - `02-prompt-optimization.ipynb` (2.5 hours)
-  - **Decision Framework**: Manual vs. automated optimization
-  - **Manual Optimization**: Clear instructions, few-shot examples, Chain-of-Thought, structured output
-  - **Automated Optimization**: Bedrock API, Metaprompting, Data-Aware, DSPy
-  - **Comprehensive Lab**: Apply optimization techniques systematically
-  - **Best Practices**: Model selection, version control, monitoring
+  - Decision Framework, Manual Optimization, Automated Optimization, Hands-on Lab, Best Practices
 
 **Duration**: ~5 hours
 
