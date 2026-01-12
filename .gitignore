@@ -1,6 +1,7 @@
 # Developer documentation (not for workshop participants)
 docs/
 CLAUDE.md
+archived/
 
 # Python
 __pycache__/
@@ -49,3 +50,6 @@ credentials
 # OS
 .DS_Store
 Thumbs.db
+
+# Temporary for WIP section
+03-advanced-concepts/

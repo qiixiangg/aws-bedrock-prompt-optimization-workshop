@@ -1,79 +1,62 @@
-# Amazon Bedrock Prompt Optimization Workshop
+# AWS Bedrock Prompt Optimization Workshop
 
-## Workshop Overview
+This hands-on workshop teaches you how to build production-grade generative AI applications with a focus on cost optimization, performance enhancement, and operational excellence.
 
-### Purpose
-This workshop empowers AI developers to build production-grade generative AI applications with a focus on cost optimization, performance enhancement, and operational excellence. Participants will learn advanced prompt optimization techniques, implement prompt caching strategies, and integrate production-ready tooling for GenAI application lifecycle management.
+**Target Audience**: AI/ML Developers, Software Engineers working with agentic systems, DevOps Engineers deploying GenAI workloads
 
-### Target Audience
-- AI/ML Developers building GenAI and LLM applications
-- Software Engineers working with agentic systems
-- DevOps Engineers deploying production GenAI workloads
-- Solution Architects designing enterprise AI solutions
+---
 
-### Workshop Duration
-4-5 hours (instructor-led with hands-on labs)
+## Workshop Objectives
 
-### Prerequisites
-- AWS Account with Amazon Bedrock access enabled
-- Python 3.9+ installed locally
-- boto3 SDK familiarity
-- Basic understanding of LLMs and prompt engineering concepts
+This workshop focuses on optimizing three key metrics for production GenAI applications:
 
-### Key Learning Objectives
-
-By the end of this workshop, you will be able to:
-
-1. **Optimize costs and latency** through strategic prompt caching (significant cost and latency reductions)
-2. **Apply systematic prompt optimization techniques** using manual and automated methods
-3. **Build production-grade agentic systems** with proper observability, monitoring, and evaluation
-4. **Integrate CI/CD practices** for prompt lifecycle management
-5. **Implement evaluation frameworks** for systematic prompt testing and validation
+| Objective | Definition | Why It Matters |
+|-----------|------------|----------------|
+| **Accuracy** | The quality and correctness of model outputs relative to expected results | Ensures your application delivers value to users and meets business requirements |
+| **Cost** | Total expenditure on model inference, including input tokens, output tokens, and cache operations | Controls operational expenses and enables sustainable scaling |
+| **Latency** | Time elapsed from request initiation to response completion | Impacts user experience and application responsiveness |
 
 ---
 
 ## Workshop Structure
 
-### **Part 1: Theory & Foundations** (01-theory-foundations/)
-Learn the fundamentals of prompt optimization economics and caching mechanics.
+This workshop is organized into progressive parts:
 
-**Notebooks**:
-- `01-economics-of-optimization.ipynb` - Why optimization matters (cost, latency, scale)
-- `02-understanding-prompt-caching.ipynb` - Cache mechanics, TTL, cost structure
+### Part 1: Basis - Fundamentals
+*Estimated time: 1.5 hours*
 
-**Duration**: ~60 minutes
+Build a solid understanding of tokens, pricing, and optimization strategies.
+
+| Topic | Duration | Description |
+|-------|----------|-------------|
+| [Prompts 101](./01-basis/01-prompts-101.ipynb) | 30 min | Tokens, pricing, TPM/RPM, terminology |
+| [Optimization Strategy](./01-basis/02-optimization-strategy.ipynb) | 45 min | Model selection, prompt design, parameter tuning, basic caching |
+| [Langfuse Observability](./01-basis/03-langfuse-observability.ipynb) | TBD | Observability with LangFuse (Pending) |
+
+### Part 2: Developer Journey
+*Estimated time: 2 hours*
+
+Build a production-ready application applying optimization techniques (coming soon).
+
+### Part 3: Advanced Concepts
+*Estimated time: 2-2.5 hours*
+
+Advanced prompt engineering techniques and complex caching patterns.
+
+| Topic | Duration | Description |
+|-------|----------|-------------|
+| Advanced Prompt Engineering | 60-90 min | CoT, Self-Refine, CoD, technique selection |
+| Advanced Prompt Caching | 60 min | Multi-checkpoint patterns, cache strategies |
+| TBD | TBD | TBD |
 
 ---
 
-### **Part 2: Best Practices** (02-best-practices/)
-Master caching patterns and systematic optimization with hands-on practice.
+## Prerequisites
 
-**Notebooks**:
-- `01-prompt-caching.ipynb` (2.5 hours)
-  - **Part A: Caching Fundamentals** - API syntax, multi-checkpoint patterns, cache invalidation
-  - **Part B: Strategy Principles** - Checkpoint strategies, static/dynamic separation, monitoring, warm-up
-
-- `02-prompt-optimization.ipynb` (2.5 hours)
-  - Decision Framework, Manual Optimization, Automated Optimization, Hands-on Lab, Best Practices
-
-**Duration**: ~5 hours
-
----
-
-### **Part 3: Developer Journey** (03-developer-journey/)
-Build a production customer support agent with optimization, caching, observability, and CI/CD.
-
-**Use Case**: CloudCommerce Customer Support AI Assistant
-
-**Notebooks**:
-- `01-baseline-prompt.ipynb` - v1.0.0 baseline with clear instructions and examples
-- `02-optimized-prompt.ipynb` - v1.1.0 with optimization techniques (CoT + structured output)
-- `03-caching-implementation.ipynb` - Apply multi-checkpoint caching
-- `04-observability.ipynb` - LangFuse + CloudWatch integration
-- `05-evaluation-framework.ipynb` - Systematic testing & metrics
-- `06-cicd-simulation.ipynb` - CI/CD workflow walkthrough
-
-**Duration**: ~2 hours
+### Required
+- AWS Account with Amazon Bedrock access enabled
+- Python 3.9 or higher
+- Basic familiarity with Python and Jupyter notebooks
 
 ---
 
@@ -170,60 +153,15 @@ The notebooks will automatically load credentials using `python-dotenv`.
 ### 3. Test Bedrock Connectivity
 
 ```bash
-python -c "from dotenv import load_dotenv; load_dotenv(); import boto3; client = boto3.client('bedrock-runtime'); print('✅ Bedrock connection successful'); print(f'Region: {client.meta.region_name}')"
+python -c "from dotenv import load_dotenv; load_dotenv(); import boto3; client = boto3.client('bedrock-runtime'); print('Bedrock connection successful'); print(f'Region: {client.meta.region_name}')"
 ```
-
-Expected output:
-```
-✅ Bedrock connection successful
-Region: us-east-1
-```
-
----
-
-### 4. Optional: Observability Tools
-
-**LangFuse Setup** (for Lab 4):
-1. Sign up at [langfuse.com](https://langfuse.com)
-2. Create a new project
-3. Copy API keys (public key + secret key)
-4. Add credentials to your `.env` file:
-```bash
-# Add to .env
-LANGFUSE_PUBLIC_KEY=your-public-key
-LANGFUSE_SECRET_KEY=your-secret-key
-LANGFUSE_HOST=https://cloud.langfuse.com
-```
-
----
-
-## Workshop Flow
-
-1. **Start with Part 1** to understand the fundamentals
-2. **Move to Part 2** for hands-on practice with patterns and labs
-3. **Complete Part 3** to build a full production use case
-4. **Optional**: Extend the use case with your own data and requirements
-
----
-
-## Additional Resources
-
-- **AWS Documentation**: [Amazon Bedrock User Guide](https://docs.aws.amazon.com/bedrock/)
-- **Pricing**: [Amazon Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/)
-- **Samples**: [Amazon Bedrock Samples GitHub](https://github.com/aws-samples/amazon-bedrock-samples)
-- **Community**: [AWS re:Post - Bedrock](https://repost.aws/tags/TA4ckIB8_RRRKfB_okAkg39g/amazon-bedrock)
-
----
-
-## Support
-
-For questions or issues during the workshop:
-- Raise your hand for instructor assistance
-- Check the troubleshooting section in each notebook
-- Refer to AWS documentation links provided
 
 ---
 
 ## License
 
 This workshop is provided under the MIT-0 license. See LICENSE file for details.
+
+---
+
+**Last Updated**: January 2026
