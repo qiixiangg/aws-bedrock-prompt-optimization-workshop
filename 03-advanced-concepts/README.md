@@ -24,7 +24,7 @@ After completing this section, you will:
 
 - Complete [01-basis](../01-basis/) first
 - AWS Account with Amazon Bedrock access
-- Python 3.9+
+- Python 3.10+
 
 ## Next Steps
 

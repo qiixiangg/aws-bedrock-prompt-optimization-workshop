@@ -21,7 +21,7 @@ After completing this section, you will:
 ## Prerequisites
 
 - AWS Account with Amazon Bedrock access
-- Python 3.9+
+- Python 3.10+
 - `.env` file with AWS credentials (see root `.env.example`)
 
 ## Key Metrics Covered

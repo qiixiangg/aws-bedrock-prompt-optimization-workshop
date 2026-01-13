@@ -55,7 +55,7 @@ Advanced prompt engineering techniques and complex caching patterns.
 
 ### Required
 - AWS Account with Amazon Bedrock access enabled
-- Python 3.9 or higher
+- Python 3.10 or higher
 - Basic familiarity with Python and Jupyter notebooks
 
 ---
@@ -88,7 +88,7 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 **Create and activate virtual environment**:
 ```bash
-# Create virtual environment with Python 3.9+
+# Create virtual environment with Python 3.10+
 uv venv
 
 # Activate virtual environment
