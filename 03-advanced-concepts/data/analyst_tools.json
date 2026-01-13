@@ -1,0 +1,219 @@
+[
+  {
+    "toolSpec": {
+      "name": "query_database",
+      "description": "Execute SQL queries against the Analytics Intelligence Platform database. This tool provides access to sales, marketing, finance, and customer data warehouses. Supported query types include SELECT statements for data retrieval, aggregations (SUM, COUNT, AVG, MIN, MAX), window functions (ROW_NUMBER, RANK, LAG, LEAD), common table expressions (CTEs), and subqueries. The tool automatically applies row-level security based on user permissions and enforces query timeouts of 30 seconds for interactive queries. Results are returned in JSON format with column metadata. For large result sets exceeding 10,000 rows, pagination is automatically applied. The tool logs all queries for audit compliance and tracks query performance metrics. Available schemas: sales (transactions, products, customers, regions), marketing (campaigns, impressions, conversions, attribution), finance (revenue, costs, forecasts), and analytics (user_events, page_views, sessions). Date partitioning is available on most tables for optimal performance. Use EXPLAIN ANALYZE prefix to get query execution plans for optimization.",
+      "inputSchema": {
+        "json": {
+          "type": "object",
+          "properties": {
+            "sql": {
+              "type": "string",
+              "description": "The SQL query to execute. Must be a valid SELECT statement. DML operations (INSERT, UPDATE, DELETE) are not permitted. Query timeout is 30 seconds for interactive mode, 5 minutes for batch mode."
+            },
+            "database": {
+              "type": "string",
+              "enum": ["analytics_prod", "analytics_staging", "data_warehouse"],
+              "description": "Target database to query. Use analytics_prod for production data, analytics_staging for testing, data_warehouse for historical analysis."
+            },
+            "timeout_seconds": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300,
+              "description": "Query timeout in seconds. Default is 30 for interactive queries. Increase for complex analytical queries."
+            },
+            "result_format": {
+              "type": "string",
+              "enum": ["json", "csv", "parquet"],
+              "description": "Output format for query results. JSON is default for API responses, CSV for exports, Parquet for large datasets."
+            }
+          },
+          "required": ["sql"]
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "generate_chart",
+      "description": "Generate data visualizations from query results or provided datasets. Supports multiple chart types including line charts for time series analysis, bar charts for category comparisons, scatter plots for correlation analysis, pie charts for part-to-whole relationships, heatmaps for multi-dimensional data, histograms for distribution analysis, box plots for statistical summaries, and geographic maps for location-based data. Charts are rendered using a high-quality visualization engine with support for interactive features, custom color palettes, annotations, trend lines, and reference lines. Output formats include PNG for static images, SVG for vector graphics, and interactive HTML for web embedding. The tool automatically handles data type detection, axis scaling, and legend positioning. For time series data, it supports automatic date parsing and interval detection. Statistical overlays like moving averages, confidence intervals, and regression lines can be added. Accessibility features include color-blind friendly palettes and screen reader compatible descriptions. Charts can be customized with corporate branding including logos, custom fonts, and color themes defined in the brand configuration.",
+      "inputSchema": {
+        "json": {
+          "type": "object",
+          "properties": {
+            "chart_type": {
+              "type": "string",
+              "enum": ["line", "bar", "scatter", "pie", "heatmap", "histogram", "box", "map", "area", "waterfall", "funnel", "treemap"],
+              "description": "Type of chart to generate. Choose based on data characteristics and analytical goal."
+            },
+            "data": {
+              "type": "object",
+              "description": "Data to visualize. Can be raw data array or reference to query results. For time series, include timestamp column. For geographic, include lat/lon or region codes."
+            },
+            "title": {
+              "type": "string",
+              "description": "Chart title. Should be descriptive and include date range or key context."
+            },
+            "x_axis": {
+              "type": "object",
+              "properties": {
+                "field": {"type": "string"},
+                "label": {"type": "string"},
+                "type": {"type": "string", "enum": ["linear", "log", "time", "category"]}
+              },
+              "description": "X-axis configuration including data field, display label, and scale type."
+            },
+            "y_axis": {
+              "type": "object",
+              "properties": {
+                "field": {"type": "string"},
+                "label": {"type": "string"},
+                "type": {"type": "string", "enum": ["linear", "log", "percentage"]}
+              },
+              "description": "Y-axis configuration including data field, display label, and scale type."
+            },
+            "color_palette": {
+              "type": "string",
+              "enum": ["corporate", "colorblind_safe", "sequential", "diverging", "categorical"],
+              "description": "Color scheme for the visualization. Corporate uses brand colors, colorblind_safe ensures accessibility."
+            },
+            "output_format": {
+              "type": "string",
+              "enum": ["png", "svg", "html", "pdf"],
+              "description": "Output format. PNG for presentations, SVG for print, HTML for interactive web, PDF for reports."
+            }
+          },
+          "required": ["chart_type", "data"]
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "export_report",
+      "description": "Export analysis results and visualizations to formatted reports. Supports multiple output formats including PDF for formal reports, PowerPoint for presentations, Excel for data analysis workbooks, Word for documentation, and HTML for web publishing. Reports can include executive summaries, detailed analysis sections, data tables, charts, and appendices. Templates are available for different report types: executive dashboard, quarterly business review, marketing performance, sales analysis, financial summary, and custom templates. The tool handles pagination, table of contents generation, page numbering, headers and footers, and corporate branding. Data tables support conditional formatting, sparklines, and pivot summaries. Charts maintain high resolution for print quality. Reports can be scheduled for automatic generation and distribution via email or saved to cloud storage. Version control and audit trails track all report generations. Localization support includes date formats, number formats, and currency symbols for different regions. Reports can be password protected and encrypted for sensitive data.",
+      "inputSchema": {
+        "json": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string",
+              "enum": ["pdf", "pptx", "xlsx", "docx", "html"],
+              "description": "Output format for the report. PDF for formal distribution, PPTX for presentations, XLSX for data workbooks."
+            },
+            "template": {
+              "type": "string",
+              "enum": ["executive_dashboard", "quarterly_review", "marketing_performance", "sales_analysis", "financial_summary", "custom"],
+              "description": "Report template to use. Templates define layout, sections, and formatting."
+            },
+            "title": {
+              "type": "string",
+              "description": "Report title displayed on cover page and headers."
+            },
+            "sections": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {"type": "string", "enum": ["text", "chart", "table", "kpi", "summary"]},
+                  "content": {"type": "object"}
+                }
+              },
+              "description": "Array of report sections in display order."
+            },
+            "recipients": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Email addresses for automatic distribution after generation."
+            }
+          },
+          "required": ["format"]
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "get_data_summary",
+      "description": "Generate statistical summaries and data quality reports for datasets. Provides comprehensive profiling including row counts, column statistics (mean, median, mode, standard deviation, percentiles), data type detection, null value analysis, unique value counts, and distribution analysis. For numeric columns, calculates skewness, kurtosis, and identifies outliers using IQR and z-score methods. For categorical columns, provides frequency distributions and cardinality analysis. For date columns, identifies range, gaps, and patterns. Data quality checks include completeness scores, consistency validation, duplicate detection, and referential integrity verification. The tool can compare datasets across time periods to identify drift or anomalies. Memory-efficient processing handles large datasets through sampling and chunked processing. Results include visualizations of distributions and correlation matrices. Export options include JSON for programmatic access, HTML for interactive exploration, and PDF for documentation. Integration with data catalog updates metadata and quality scores automatically.",
+      "inputSchema": {
+        "json": {
+          "type": "object",
+          "properties": {
+            "dataset": {
+              "type": "string",
+              "description": "Name of the dataset or table to analyze. Can be a table name or query reference."
+            },
+            "columns": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Specific columns to analyze. If omitted, all columns are profiled."
+            },
+            "sample_size": {
+              "type": "integer",
+              "description": "Number of rows to sample for large datasets. Use 0 for full dataset analysis."
+            },
+            "include_quality_checks": {
+              "type": "boolean",
+              "description": "Whether to run data quality validation checks."
+            },
+            "compare_to": {
+              "type": "string",
+              "description": "Optional reference dataset for comparison analysis (e.g., previous snapshot)."
+            }
+          },
+          "required": ["dataset"]
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "schedule_job",
+      "description": "Schedule recurring analytical jobs including queries, reports, and data pipelines. Supports cron-based scheduling for complex patterns, simple interval scheduling (hourly, daily, weekly, monthly), and event-triggered execution. Jobs can have dependencies on other jobs, data availability checks, and SLA monitoring. Notification options include email alerts on completion, failure, or SLA breach. Retry logic handles transient failures with configurable backoff strategies. Job history and logs are retained for 90 days for debugging and audit. Resource allocation can be specified for compute-intensive jobs. Jobs can be grouped into workflows with conditional branching based on results. Priority levels (low, normal, high, critical) determine resource allocation during peak times. Maintenance windows can be defined to pause non-critical jobs. Integration with ticketing systems creates incidents for failed critical jobs. Cost tracking estimates and reports compute costs per job for chargeback.",
+      "inputSchema": {
+        "json": {
+          "type": "object",
+          "properties": {
+            "job_name": {
+              "type": "string",
+              "description": "Unique name for the scheduled job."
+            },
+            "job_type": {
+              "type": "string",
+              "enum": ["query", "report", "pipeline", "alert", "export"],
+              "description": "Type of job to schedule."
+            },
+            "schedule": {
+              "type": "string",
+              "description": "Cron expression or interval (e.g., '0 9 * * MON' for 9am every Monday, 'daily', 'hourly')."
+            },
+            "parameters": {
+              "type": "object",
+              "description": "Job-specific parameters passed at execution time."
+            },
+            "notifications": {
+              "type": "object",
+              "properties": {
+                "on_success": {"type": "array", "items": {"type": "string"}},
+                "on_failure": {"type": "array", "items": {"type": "string"}},
+                "on_sla_breach": {"type": "array", "items": {"type": "string"}}
+              },
+              "description": "Email addresses for notifications by event type."
+            },
+            "priority": {
+              "type": "string",
+              "enum": ["low", "normal", "high", "critical"],
+              "description": "Job priority for resource allocation."
+            },
+            "timeout_minutes": {
+              "type": "integer",
+              "description": "Maximum execution time before job is terminated."
+            }
+          },
+          "required": ["job_name", "job_type", "schedule"]
+        }
+      }
+    }
+  }
+]

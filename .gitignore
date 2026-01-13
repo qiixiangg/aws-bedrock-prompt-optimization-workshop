@@ -50,6 +50,3 @@ credentials
 # OS
 .DS_Store
 Thumbs.db
-
-# Temporary for WIP section
-03-advanced-concepts/

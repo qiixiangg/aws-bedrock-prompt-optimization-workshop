@@ -1,0 +1,65 @@
+[
+  {
+    "toolSpec": {
+      "name": "get_weather",
+      "description": "Get current weather conditions and forecasts for any location worldwide. This comprehensive weather service provides real-time data including temperature (Celsius and Fahrenheit), humidity percentage, wind speed and direction, barometric pressure, visibility, UV index, and precipitation probability. Extended forecasts are available for up to 14 days with hourly granularity for the first 48 hours and daily summaries thereafter. Historical weather data is accessible for the past 30 days for comparison and trend analysis. The service covers over 200,000 cities globally and supports coordinates-based queries for precise locations. Weather alerts and warnings from national meteorological services are included when active for the requested location. Air quality index (AQI) and pollen counts are available for supported regions. Data sources include government weather services, satellite imagery, ground stations, and crowd-sourced observations for maximum accuracy. Response times are typically under 500ms with 99.9% uptime SLA.",
+      "inputSchema": {
+        "json": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "Location for weather query. Accepts city names (e.g., 'Seattle, WA'), postal codes (e.g., '98101'), coordinates (e.g., '47.6062,-122.3321'), or airport codes (e.g., 'SEA')."
+            },
+            "units": {
+              "type": "string",
+              "enum": ["metric", "imperial"],
+              "description": "Unit system for temperature and wind speed. Metric uses Celsius and km/h, Imperial uses Fahrenheit and mph."
+            },
+            "forecast_days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 14,
+              "description": "Number of forecast days to include in response. Default is 3 days."
+            },
+            "include_hourly": {
+              "type": "boolean",
+              "description": "Whether to include hourly forecasts for the first 48 hours."
+            },
+            "include_alerts": {
+              "type": "boolean",
+              "description": "Whether to include active weather alerts and warnings."
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    }
+  },
+  {
+    "toolSpec": {
+      "name": "get_air_quality",
+      "description": "Get air quality index and pollutant measurements for a specified location. Returns the overall Air Quality Index (AQI) on the EPA scale (0-500), along with individual pollutant concentrations including PM2.5, PM10, ozone (O3), nitrogen dioxide (NO2), sulfur dioxide (SO2), and carbon monoxide (CO). Health recommendations are provided based on AQI levels for general population and sensitive groups (children, elderly, those with respiratory conditions). Forecast data is available for the next 5 days. Historical data for the past 7 days enables trend analysis. The service integrates data from government monitoring stations, satellite observations, and predictive models. Coverage includes major metropolitan areas globally with higher density in North America, Europe, and East Asia. Real-time updates occur every hour for most stations.",
+      "inputSchema": {
+        "json": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "Location for air quality query. Same format as weather location."
+            },
+            "include_forecast": {
+              "type": "boolean",
+              "description": "Whether to include 5-day AQI forecast."
+            },
+            "include_pollutants": {
+              "type": "boolean",
+              "description": "Whether to include individual pollutant breakdowns."
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    }
+  }
+]

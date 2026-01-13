@@ -1,0 +1,215 @@
+AnyCompany Customer Support Policies and Guidelines
+Version 2.4 | Last Updated: January 2025
+
+================================================================================
+SECTION 1: CORE VALUES AND COMMUNICATION STANDARDS
+================================================================================
+
+1.1 Mission Statement
+Our mission is to provide exceptional customer support that exceeds expectations,
+builds lasting relationships, and turns every interaction into an opportunity to
+demonstrate our commitment to customer success.
+
+1.2 Communication Tone
+- Always maintain a professional, friendly, and empathetic tone
+- Use clear, jargon-free language that customers can easily understand
+- Acknowledge customer frustrations before jumping to solutions
+- Never argue with customers or become defensive
+- Use positive language: "I can help you with..." instead of "I can't do that..."
+
+1.3 Response Time Standards
+- Live Chat: Initial response within 30 seconds
+- Email: First response within 4 hours during business hours
+- Phone: Answer within 3 rings (target 90% of calls)
+- Social Media: Respond within 2 hours during business hours
+- Escalated Issues: Manager callback within 24 hours
+
+================================================================================
+SECTION 2: RETURN AND REFUND POLICIES
+================================================================================
+
+2.1 Standard Return Policy
+Customers may return most items within 30 days of delivery for a full refund.
+Items must be:
+- In original, unopened packaging
+- Unused and in resalable condition
+- Accompanied by order confirmation or receipt
+
+2.2 Extended Return Windows
+- Holiday purchases (Nov 15 - Dec 31): Returns accepted until January 31
+- Premium members: 60-day return window
+- Business accounts: 45-day return window
+
+2.3 Non-Returnable Items
+The following items cannot be returned:
+- Personalized or custom-made products
+- Perishable goods (food, flowers, etc.)
+- Digital downloads and software licenses
+- Gift cards and store credit
+- Items marked "Final Sale" at time of purchase
+- Undergarments and swimwear (hygiene reasons)
+- Opened beauty and personal care products
+
+2.4 Refund Processing
+- Original payment method: 5-7 business days
+- Store credit: Immediate (within 24 hours)
+- Exchange: Ships within 2 business days of return receipt
+- International returns: 10-14 business days for refund processing
+
+2.5 Damaged or Defective Items
+For items that arrive damaged or defective:
+- Full refund or replacement at customer's choice
+- No return shipping required for items under $50
+- Prepaid return label provided for items over $50
+- Photo documentation may be required for high-value items
+- Report within 48 hours of delivery for fastest resolution
+
+================================================================================
+SECTION 3: SHIPPING POLICIES
+================================================================================
+
+3.1 Domestic Shipping Options
+- Economy (7-10 business days): FREE on orders over $35
+- Standard (5-7 business days): $5.99 flat rate
+- Express (2-3 business days): $12.99 flat rate
+- Next Day (1 business day): $24.99 flat rate
+- Same Day (select metro areas): $34.99
+
+3.2 International Shipping
+- Standard International (10-21 business days): Calculated at checkout
+- Express International (5-10 business days): Calculated at checkout
+- Duties and taxes are the responsibility of the recipient
+- Some items may have shipping restrictions by country
+
+3.3 Order Processing Times
+- In-stock items: Ship within 1-2 business days
+- Pre-orders: Ship on or before the release date
+- Custom/personalized items: 5-10 business days before shipping
+- Backordered items: Estimated ship date provided via email
+
+3.4 Lost or Missing Packages
+- Report missing packages 7+ days after expected delivery
+- Investigation initiated within 24 hours
+- Replacement shipped or refund issued within 5 business days
+- Customers may be asked to check with neighbors, building management
+
+================================================================================
+SECTION 4: PRICING AND PROMOTIONS
+================================================================================
+
+4.1 Price Match Policy
+We match prices from major authorized retailers:
+- Must be identical item (same brand, model, color, size)
+- Item must be in stock at the competitor
+- Online prices matched to online; in-store to in-store
+- Excludes marketplace sellers, auction sites, flash sales
+- Request must be made within 14 days of purchase
+
+4.2 Promotional Codes
+- One promotional code per order
+- Cannot be combined with other offers unless stated
+- Codes cannot be applied retroactively to placed orders
+- Expired codes cannot be honored
+- Employee discount: 25% (cannot combine with other promotions)
+
+4.3 Price Adjustments
+- Request within 7 days if item goes on sale after purchase
+- Refund difference to original payment method
+- Maximum one price adjustment per item
+- Does not apply to clearance or final sale items
+
+================================================================================
+SECTION 5: ACCOUNT AND PRIVACY
+================================================================================
+
+5.1 Account Security
+- Never ask customers for full passwords
+- Verify identity using last 4 digits of payment method + order number
+- Three failed verification attempts = escalate to supervisor
+- Suspicious activity: Freeze account and notify customer
+
+5.2 Data Privacy
+- Customer data is confidential and protected
+- Only access information necessary for the current interaction
+- Do not share customer information with third parties
+- Follow GDPR and CCPA requirements for data requests
+
+5.3 Account Changes
+- Email changes require verification from both old and new addresses
+- Address changes for orders in transit require phone verification
+- Payment method changes: Direct customer to self-service portal
+- Account deletion requests processed within 30 days
+
+================================================================================
+SECTION 6: ESCALATION PROCEDURES
+================================================================================
+
+6.1 When to Escalate
+- Customer requests to speak with a manager
+- Issue cannot be resolved with standard policies
+- Customer threatens legal action
+- Suspected fraud or security breach
+- Complaints about employee conduct
+- Media or influencer complaints
+
+6.2 Escalation Path
+Level 1: Frontline Support Agent (most issues)
+Level 2: Senior Support Specialist (complex issues)
+Level 3: Team Lead (policy exceptions up to $100)
+Level 4: Support Manager (policy exceptions up to $500)
+Level 5: Director of Customer Experience (all other escalations)
+
+6.3 Compensation Authority
+- Frontline agents: Up to $25 in store credit or free shipping
+- Senior specialists: Up to $50 in store credit
+- Team leads: Up to $100 in refunds or credits
+- Managers: Up to $500 and free products under $100 value
+- Directors: Unlimited within reason
+
+================================================================================
+SECTION 7: SPECIAL SITUATIONS
+================================================================================
+
+7.1 VIP Customers
+Premium and VIP members receive:
+- Priority queue placement
+- Extended return windows
+- Dedicated support line
+- Proactive order issue resolution
+- Birthday and anniversary perks
+
+7.2 Business Accounts
+- Net-30 payment terms available
+- Volume discounts negotiated by sales team
+- Dedicated account representative
+- Custom invoicing and reporting
+
+7.3 Accessibility Accommodations
+- TTY/TDD service available for hearing impaired
+- Screen reader compatible self-service options
+- Extended call times for customers who need it
+- Alternative format documentation upon request
+
+================================================================================
+SECTION 8: QUALITY ASSURANCE
+================================================================================
+
+8.1 Call Monitoring
+- Calls may be recorded for quality assurance
+- Random sampling: 5 calls per agent per week reviewed
+- Customer satisfaction surveys sent after interactions
+- Performance metrics: CSAT, FCR, AHT, NPS
+
+8.2 Continuous Improvement
+- Weekly team meetings to discuss common issues
+- Monthly policy updates based on customer feedback
+- Quarterly training refreshers
+- Annual comprehensive policy review
+
+================================================================================
+
+For questions about these policies, contact your team lead or the Policy Team
+at policies@anycompany.example.com.
+
+Remember: When in doubt, err on the side of the customer. Our goal is to create
+customers for life, not to win individual interactions.
