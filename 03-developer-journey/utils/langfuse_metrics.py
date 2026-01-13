@@ -308,6 +308,117 @@ def get_latest_trace_metrics(
     }
 
 
+def calculate_totals_from_collected() -> dict:
+    """Calculate totals from collected metrics."""
+    global _collected_metrics
+    metrics = [m for m in _collected_metrics if 'error' not in m]
+
+    if not metrics:
+        return {
+            "total_cost": 0,
+            "avg_latency": 0,
+            "total_input_tokens": 0,
+            "total_output_tokens": 0,
+            "total_cache_read_tokens": 0,
+            "total_cache_write_tokens": 0,
+        }
+
+    latencies = [m.get('latency_seconds', 0) or 0 for m in metrics]
+    return {
+        "total_cost": sum(m.get('cost_usd', 0) for m in metrics),
+        "avg_latency": sum(latencies) / len(latencies) if latencies else 0,
+        "total_input_tokens": sum(m.get('input_tokens', 0) for m in metrics),
+        "total_output_tokens": sum(m.get('output_tokens', 0) for m in metrics),
+        "total_cache_read_tokens": sum(m.get('cache_read_tokens', 0) for m in metrics),
+        "total_cache_write_tokens": sum(m.get('cache_write_tokens', 0) for m in metrics),
+    }
+
+
+def print_comparison(
+    prev_name: str,
+    curr_name: str,
+    prev_cost: float,
+    prev_latency: float,
+    prev_input_tokens: int,
+    prev_output_tokens: int,
+    curr_cost: float = None,
+    curr_latency: float = None,
+    curr_input_tokens: int = None,
+    curr_output_tokens: int = None,
+) -> None:
+    """
+    Print a comparison table between two versions.
+
+    If curr_* values are not provided, they are calculated from collected metrics.
+
+    Args:
+        prev_name: Name of previous version (e.g., "v1 (Baseline)")
+        curr_name: Name of current version (e.g., "v2 (Quick Wins)")
+        prev_cost: Total cost from previous version
+        prev_latency: Average latency from previous version
+        prev_input_tokens: Total input tokens from previous version
+        prev_output_tokens: Total output tokens from previous version
+        curr_*: Current version metrics (optional, calculated if not provided)
+    """
+    # Calculate current metrics from collected if not provided
+    if curr_cost is None or curr_latency is None:
+        totals = calculate_totals_from_collected()
+        curr_cost = curr_cost if curr_cost is not None else totals["total_cost"]
+        curr_latency = curr_latency if curr_latency is not None else totals["avg_latency"]
+        curr_input_tokens = curr_input_tokens if curr_input_tokens is not None else totals["total_input_tokens"]
+        curr_output_tokens = curr_output_tokens if curr_output_tokens is not None else totals["total_output_tokens"]
+
+    # Header
+    print("=" * 70)
+    print(f"  {prev_name.upper()} vs {curr_name.upper()} COMPARISON")
+    print("=" * 70)
+    print(f"{'Metric':<20} {prev_name:>18} {curr_name:>18} {'Change':>12}")
+    print("-" * 70)
+
+    has_prev_metrics = prev_cost > 0 and prev_latency > 0
+
+    # Cost comparison
+    if prev_cost > 0:
+        cost_change = ((curr_cost - prev_cost) / prev_cost) * 100
+        cost_str = f"{cost_change:+.1f}%"
+    else:
+        cost_change = 0
+        cost_str = "N/A"
+    print(f"{'Total Cost':<20} ${prev_cost:>17.4f} ${curr_cost:>17.4f} {cost_str:>12}")
+
+    # Latency comparison
+    if prev_latency > 0:
+        latency_change = ((curr_latency - prev_latency) / prev_latency) * 100
+        latency_str = f"{latency_change:+.1f}%"
+    else:
+        latency_change = 0
+        latency_str = "N/A"
+    print(f"{'Avg Latency (s)':<20} {prev_latency:>18.2f} {curr_latency:>18.2f} {latency_str:>12}")
+
+    # Input tokens comparison
+    if prev_input_tokens > 0:
+        input_change = ((curr_input_tokens - prev_input_tokens) / prev_input_tokens) * 100
+        input_str = f"{input_change:+.1f}%"
+    else:
+        input_str = "N/A"
+    print(f"{'Input Tokens':<20} {prev_input_tokens:>18,} {curr_input_tokens:>18,} {input_str:>12}")
+
+    # Output tokens comparison
+    if prev_output_tokens > 0:
+        output_change = ((curr_output_tokens - prev_output_tokens) / prev_output_tokens) * 100
+        output_str = f"{output_change:+.1f}%"
+    else:
+        output_str = "N/A"
+    print(f"{'Output Tokens':<20} {prev_output_tokens:>18,} {curr_output_tokens:>18,} {output_str:>12}")
+
+    print("=" * 70)
+    if has_prev_metrics:
+        print(f"\nResult: {-cost_change:.1f}% cost {'reduction' if cost_change < 0 else 'increase'}, "
+              f"{-latency_change:.1f}% latency {'improvement' if latency_change < 0 else 'increase'}")
+    else:
+        print(f"\n⚠️  Enter your {prev_name} metrics above to see the comparison")
+
+
 def print_metrics(metrics: dict, test_name: str = "") -> None:
     """Pretty print metrics from get_latest_trace_metrics."""
     host = os.environ.get("LANGFUSE_HOST", "https://cloud.langfuse.com")
