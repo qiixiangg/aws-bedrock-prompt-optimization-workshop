@@ -160,8 +160,6 @@ python -c "from dotenv import load_dotenv; load_dotenv(); import boto3; client =
 
 ## License
 
-This workshop is provided under the MIT-0 license. See LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-
-**Last Updated**: January 2026
