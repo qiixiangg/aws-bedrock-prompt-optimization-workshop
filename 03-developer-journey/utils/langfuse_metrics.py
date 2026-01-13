@@ -205,6 +205,32 @@ def get_latest_trace_metrics(
     except Exception:
         observations = []
 
+    # Helper to safely convert string/int/dict values to int
+    def safe_int(val):
+        if val is None:
+            return 0
+        if isinstance(val, (int, float)):
+            return int(val)
+        if isinstance(val, str):
+            # Check if it's a JSON string like '{"intValue":0}'
+            if val.startswith('{'):
+                try:
+                    import json
+                    parsed = json.loads(val)
+                    if isinstance(parsed, dict):
+                        return int(parsed.get('intValue', 0) or 0)
+                except (json.JSONDecodeError, ValueError):
+                    pass
+            # Try direct int conversion
+            try:
+                return int(val)
+            except ValueError:
+                return 0
+        if isinstance(val, dict):
+            # OTEL sometimes stores as {"intValue": 123}
+            return int(val.get('intValue', 0) or 0)
+        return 0
+
     # Calculate metrics from observations - only count GENERATION type to avoid double-counting
     total_input_tokens = 0
     total_output_tokens = 0
@@ -219,18 +245,41 @@ def get_latest_trace_metrics(
             continue
 
         usage = getattr(obs, 'usage', None) or {}
+        metadata = getattr(obs, 'metadata', None) or {}
+
+        # Extract from usage dict
         if isinstance(usage, dict):
-            # Use input/output first, fallback to promptTokens/completionTokens (not both!)
-            inp = usage.get('input') or usage.get('promptTokens') or usage.get('input_tokens') or 0
-            out = usage.get('output') or usage.get('completionTokens') or usage.get('output_tokens') or 0
-            # Cache metrics
-            cache_read = usage.get('cache_read_input_tokens') or usage.get('cacheReadInputTokens') or 0
-            cache_write = usage.get('cache_creation_input_tokens') or usage.get('cacheWriteInputTokens') or 0
+            inp = safe_int(usage.get('input') or usage.get('promptTokens') or usage.get('input_tokens'))
+            out = safe_int(usage.get('output') or usage.get('completionTokens') or usage.get('output_tokens'))
+            # Cache metrics - check multiple possible locations
+            cache_read = safe_int(
+                usage.get('cache_read_input_tokens') or
+                usage.get('cacheReadInputTokens') or
+                usage.get('cacheRead')
+            )
+            cache_write = safe_int(
+                usage.get('cache_creation_input_tokens') or
+                usage.get('cacheWriteInputTokens') or
+                usage.get('cacheCreationInputTokens') or
+                usage.get('cacheWrite')
+            )
         else:
-            inp = getattr(usage, 'input', None) or getattr(usage, 'prompt_tokens', None) or 0
-            out = getattr(usage, 'output', None) or getattr(usage, 'completion_tokens', None) or 0
-            cache_read = getattr(usage, 'cache_read_input_tokens', None) or 0
-            cache_write = getattr(usage, 'cache_creation_input_tokens', None) or 0
+            inp = safe_int(getattr(usage, 'input', None) or getattr(usage, 'prompt_tokens', None))
+            out = safe_int(getattr(usage, 'output', None) or getattr(usage, 'completion_tokens', None))
+            cache_read = safe_int(getattr(usage, 'cache_read_input_tokens', None))
+            cache_write = safe_int(getattr(usage, 'cache_creation_input_tokens', None))
+
+        # Check metadata['attributes'] for OTEL gen_ai attributes
+        if isinstance(metadata, dict):
+            attrs = metadata.get('attributes', {})
+            if isinstance(attrs, dict):
+                if cache_read == 0:
+                    cache_read = safe_int(attrs.get('gen_ai.usage.cache_read_input_tokens'))
+                if cache_write == 0:
+                    cache_write = safe_int(
+                        attrs.get('gen_ai.usage.cache_creation_input_tokens') or
+                        attrs.get('gen_ai.usage.cache_write_input_tokens')
+                    )
 
         total_input_tokens += inp
         total_output_tokens += out
@@ -238,7 +287,7 @@ def get_latest_trace_metrics(
         total_cache_write_tokens += cache_write
 
         cost = getattr(obs, 'calculated_total_cost', None) or getattr(obs, 'calculatedTotalCost', 0) or 0
-        total_cost += cost
+        total_cost += float(cost) if cost else 0.0
 
     # Get latency from trace
     latency_seconds = getattr(latest_trace, 'latency', None)
