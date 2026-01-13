@@ -1,0 +1,68 @@
+{
+  "laptops": {
+    "featured_model": "TechMart Pro 15",
+    "price": "$1,299",
+    "specs": {
+      "processor": "Intel Core i7-13700H",
+      "memory": "16GB DDR5 RAM",
+      "storage": "512GB NVMe SSD",
+      "display": "15.6 inch FHD IPS 144Hz",
+      "graphics": "NVIDIA RTX 4060 6GB",
+      "battery": "72Wh, up to 10 hours",
+      "weight": "4.5 lbs"
+    },
+    "colors": ["Space Gray", "Silver", "Midnight Blue"],
+    "in_stock": true
+  },
+  "smartphones": {
+    "featured_model": "TechMart Phone X",
+    "price": "$899",
+    "specs": {
+      "processor": "Snapdragon 8 Gen 2",
+      "memory": "8GB RAM",
+      "storage": "256GB",
+      "display": "6.7 inch AMOLED 120Hz",
+      "camera": "50MP + 12MP + 10MP",
+      "battery": "5000mAh",
+      "os": "Android 14"
+    },
+    "colors": ["Obsidian Black", "Pearl White", "Ocean Blue"],
+    "in_stock": true
+  },
+  "tablets": {
+    "featured_model": "TechMart Tab Pro",
+    "price": "$649",
+    "specs": {
+      "processor": "Apple M2",
+      "memory": "8GB RAM",
+      "storage": "128GB / 256GB / 512GB",
+      "display": "11 inch Liquid Retina 120Hz",
+      "camera": "12MP rear + 12MP front",
+      "battery": "Up to 10 hours"
+    },
+    "colors": ["Silver", "Space Gray"],
+    "in_stock": true
+  },
+  "audio": {
+    "featured_model": "TechMart SoundPro Headphones",
+    "price": "$349",
+    "specs": {
+      "type": "Over-ear wireless",
+      "driver": "40mm custom",
+      "anc": "Active Noise Cancellation",
+      "battery": "30 hours with ANC",
+      "connectivity": "Bluetooth 5.2"
+    },
+    "colors": ["Midnight Black", "Cloud White", "Forest Green"],
+    "in_stock": true
+  },
+  "accessories": {
+    "items": [
+      {"name": "USB-C Hub 7-in-1", "price": "$49"},
+      {"name": "Wireless Charging Pad", "price": "$29"},
+      {"name": "Laptop Stand", "price": "$39"},
+      {"name": "Screen Protector Kit", "price": "$19"},
+      {"name": "Premium Laptop Bag", "price": "$79"}
+    ]
+  }
+}

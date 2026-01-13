@@ -1,0 +1,56 @@
+{
+  "smartphones": {
+    "window": "30 days",
+    "condition": "Original packaging, no physical damage, factory reset required",
+    "process": "Online RMA portal or technical support",
+    "refund_time": "5-7 business days",
+    "shipping": "Free return shipping",
+    "warranty": "1-year manufacturer warranty",
+    "restocking_fee": "None for unopened, 15% for opened"
+  },
+  "laptops": {
+    "window": "30 days",
+    "condition": "Original packaging, all accessories included",
+    "process": "Online RMA portal or in-store",
+    "refund_time": "7-10 business days",
+    "shipping": "Free for defects, customer pays for change of mind",
+    "warranty": "1-year manufacturer warranty",
+    "restocking_fee": "None for defects, 15% for change of mind"
+  },
+  "accessories": {
+    "window": "60 days",
+    "condition": "Unopened preferred, opened accepted",
+    "process": "Online RMA, mail-in, or in-store",
+    "refund_time": "3-5 business days",
+    "shipping": "Free on orders over $50",
+    "warranty": "90-day manufacturer warranty",
+    "restocking_fee": "None"
+  },
+  "tablets": {
+    "window": "30 days",
+    "condition": "Original packaging, factory reset",
+    "process": "Online RMA portal or technical support",
+    "refund_time": "5-7 business days",
+    "shipping": "Free return shipping",
+    "warranty": "1-year manufacturer warranty",
+    "restocking_fee": "None for unopened, 10% for opened"
+  },
+  "audio": {
+    "window": "45 days",
+    "condition": "Original packaging, all accessories included",
+    "process": "Online RMA or in-store",
+    "refund_time": "5-7 business days",
+    "shipping": "Free return shipping",
+    "warranty": "1-year manufacturer warranty",
+    "restocking_fee": "None"
+  },
+  "default": {
+    "window": "30 days",
+    "condition": "Original packaging, undamaged",
+    "process": "Contact customer support",
+    "refund_time": "7-10 business days",
+    "shipping": "Varies by product",
+    "warranty": "Standard manufacturer warranty",
+    "restocking_fee": "May apply"
+  }
+}

@@ -1,0 +1,30 @@
+# Build artifacts
+.build/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Environment
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+
+# AgentCore generated files
+.bedrock_agentcore.yaml
+Dockerfile
+.dockerignore
+
+# uv lock file
+uv.lock

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "simple-policy",
+    "query": "What is your return policy for smartphones?",
+    "expected_tool": "get_return_policy",
+    "category": "simple"
+  },
+  {
+    "id": "laptop-policy",
+    "query": "Can I return a laptop after 2 weeks?",
+    "expected_tool": "get_return_policy",
+    "category": "simple"
+  },
+  {
+    "id": "product-info",
+    "query": "Tell me about laptop specifications",
+    "expected_tool": "get_product_info",
+    "category": "simple"
+  },
+  {
+    "id": "phone-specs",
+    "query": "What are the specs on your smartphones?",
+    "expected_tool": "get_product_info",
+    "category": "simple"
+  },
+  {
+    "id": "tech-support-power",
+    "query": "My laptop won't turn on, help me troubleshoot",
+    "expected_tool": "get_technical_support",
+    "category": "complex"
+  },
+  {
+    "id": "tech-support-wifi",
+    "query": "I can't connect to WiFi on my new laptop",
+    "expected_tool": "get_technical_support",
+    "category": "complex"
+  },
+  {
+    "id": "tech-support-battery",
+    "query": "My phone battery is draining really fast, what should I do?",
+    "expected_tool": "get_technical_support",
+    "category": "complex"
+  },
+  {
+    "id": "multi-tool",
+    "query": "I want to return my laptop and need to know the specs first",
+    "expected_tools": ["get_product_info", "get_return_policy"],
+    "category": "complex"
+  },
+  {
+    "id": "shipping-simple",
+    "query": "How much is shipping?",
+    "expected_model": "haiku",
+    "category": "simple"
+  },
+  {
+    "id": "hours-simple",
+    "query": "What are your store hours?",
+    "expected_model": "haiku",
+    "category": "simple"
+  },
+  {
+    "id": "complex-comparison",
+    "query": "Compare all your laptop models and recommend one for video editing",
+    "expected_model": "sonnet",
+    "category": "complex"
+  },
+  {
+    "id": "accessories-info",
+    "query": "What accessories do you have for laptops?",
+    "expected_tool": "get_product_info",
+    "category": "simple"
+  },
+  {
+    "id": "warranty-question",
+    "query": "What warranty comes with the tablets?",
+    "expected_tool": "get_return_policy",
+    "category": "simple"
+  },
+  {
+    "id": "screen-flickering",
+    "query": "My laptop screen keeps flickering, it's driving me crazy",
+    "expected_tool": "get_technical_support",
+    "category": "complex"
+  },
+  {
+    "id": "repeat-query",
+    "query": "What is your return policy for smartphones?",
+    "tests": "caching",
+    "category": "simple"
+  }
+]
