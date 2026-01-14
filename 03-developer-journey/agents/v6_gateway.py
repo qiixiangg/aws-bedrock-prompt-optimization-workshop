@@ -1,178 +1,154 @@
 """
 V6 Gateway Agent - AgentCore Gateway with semantic tool search.
-- Load only relevant tools per query
-- Reduce context size and token usage
 """
 
 import base64
 import os
+import uuid
+
+import requests
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
-from dotenv import load_dotenv
 from mcp.client.streamable_http import streamablehttp_client
+from mcp.types import Tool as MCPTool
 from strands import Agent
 from strands.models import BedrockModel
 from strands.telemetry import StrandsTelemetry
 from strands.tools.mcp import MCPClient
+from strands.tools.mcp.mcp_client import MCPAgentTool
 from strands.types.content import SystemContentBlock
 
-load_dotenv()
+from utils.agent_config import (
+    MODEL_HAIKU,
+    MODEL_SONNET,
+    SYSTEM_PROMPT_TEXT,
+    classify_query_complexity,
+    setup_langfuse_telemetry,
+)
 
-# Langfuse configuration
-langfuse_public_key = os.environ.get("LANGFUSE_PUBLIC_KEY")
-langfuse_secret_key = os.environ.get("LANGFUSE_SECRET_KEY")
-langfuse_host = os.environ.get("LANGFUSE_HOST", "https://cloud.langfuse.com")
-LANGFUSE_AUTH = base64.b64encode(f"{langfuse_public_key}:{langfuse_secret_key}".encode()).decode()
-
-os.environ["LANGFUSE_PROJECT_NAME"] = "my-llm-project"
-os.environ["DISABLE_ADOT_OBSERVABILITY"] = "true"
-os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = f"{langfuse_host}/api/public/otel"
-os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = f"Authorization=Basic {LANGFUSE_AUTH}"
-
-for k in [
-    "OTEL_EXPORTER_OTLP_LOGS_HEADERS",
-    "AGENT_OBSERVABILITY_ENABLED",
-    "OTEL_PYTHON_DISTRO",
-    "OTEL_RESOURCE_ATTRIBUTES",
-    "OTEL_PYTHON_CONFIGURATOR",
-    "OTEL_PYTHON_EXCLUDED_URLS",
-]:
-    os.environ.pop(k, None)
+setup_langfuse_telemetry()
 
 app = BedrockAgentCoreApp()
 
 GATEWAY_URL = os.environ.get("GATEWAY_URL")
 GUARDRAIL_ID = os.environ.get("GUARDRAIL_ID")
 
-SYSTEM_PROMPT_TEXT = """You are a customer support assistant for TechMart Electronics.
-
-Available tools:
-- get_return_policy: Return/refund policy by product category
-- get_product_info: Product specs and features
-- web_search: Current information from the web
-- get_technical_support: Technical troubleshooting from knowledge base
-
-Be concise and accurate. Use tools to get information before answering."""
+# Cognito credentials (injected as env vars at deploy time)
+COGNITO_CLIENT_ID = os.environ.get("COGNITO_CLIENT_ID")
+COGNITO_CLIENT_SECRET = os.environ.get("COGNITO_CLIENT_SECRET")
+COGNITO_TOKEN_URL = os.environ.get("COGNITO_TOKEN_URL")
+COGNITO_SCOPE = os.environ.get("COGNITO_SCOPE")
 
 SYSTEM_PROMPT = [
     SystemContentBlock(text=SYSTEM_PROMPT_TEXT),
-    SystemContentBlock(cachePoint={"type": "default"})
+    SystemContentBlock(cachePoint={"type": "default"}),
 ]
 
 
-def classify_query_complexity(query: str) -> str:
-    """Classify query as 'simple' or 'complex'."""
-    simple_patterns = [
-        "return policy", "warranty", "price", "hours", "shipping",
-        "what is", "how much", "when does", "do you have", "can i return"
-    ]
-    query_lower = query.lower()
-    for pattern in simple_patterns:
-        if pattern in query_lower:
-            return "simple"
-    return "complex"
+def get_cognito_token():
+    """Get OAuth2 token from Cognito using env vars."""
+    if not all([COGNITO_CLIENT_ID, COGNITO_CLIENT_SECRET, COGNITO_TOKEN_URL, COGNITO_SCOPE]):
+        print("Missing Cognito credentials in env vars")
+        print(f"  COGNITO_CLIENT_ID: {'set' if COGNITO_CLIENT_ID else 'missing'}")
+        print(f"  COGNITO_CLIENT_SECRET: {'set' if COGNITO_CLIENT_SECRET else 'missing'}")
+        print(f"  COGNITO_TOKEN_URL: {'set' if COGNITO_TOKEN_URL else 'missing'}")
+        print(f"  COGNITO_SCOPE: {'set' if COGNITO_SCOPE else 'missing'}")
+        return None
+
+    auth = base64.b64encode(f"{COGNITO_CLIENT_ID}:{COGNITO_CLIENT_SECRET}".encode()).decode()
+    response = requests.post(
+        COGNITO_TOKEN_URL,
+        headers={
+            "Authorization": f"Basic {auth}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        data={"grant_type": "client_credentials", "scope": COGNITO_SCOPE},
+    )
+    response.raise_for_status()
+    return response.json()["access_token"]
+
+
+def search_results_to_tools(results, client, top_n=1):
+    """Convert search results to MCPAgentTool objects.
+
+    Returns only top_n tools (default 1) to demonstrate semantic ranking.
+    In production with many tools, you might use a higher limit or relevance threshold.
+    """
+    tools = []
+    for tool in results[:top_n]:
+        mcp_tool = MCPTool(
+            name=tool["name"],
+            description=tool["description"],
+            inputSchema=tool["inputSchema"],
+        )
+        tools.append(MCPAgentTool(mcp_tool, client))
+    return tools
 
 
 @app.entrypoint
-async def invoke(payload, context=None):
+def invoke(payload, context=None):
     user_input = payload.get("prompt", "")
-    print(f"V6 GATEWAY: User input: {user_input}")
 
-    strands_telemetry = StrandsTelemetry()
-    strands_telemetry.setup_otlp_exporter()
+    telemetry = StrandsTelemetry()
+    telemetry.setup_otlp_exporter()
 
     complexity = classify_query_complexity(user_input)
-    model_id = "us.anthropic.claude-haiku-4-5-20251001-v1:0" if complexity == "simple" else "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+    model_id = MODEL_HAIKU if complexity == "simple" else MODEL_SONNET
 
-    # If Gateway is configured, use semantic tool search
-    if GATEWAY_URL and context:
-        auth_header = context.request_headers.get("Authorization", "")
+    # Get Cognito token for Gateway auth
+    bearer_token = get_cognito_token()
+    if not bearer_token:
+        return {"error": "Failed to get Cognito token - check env vars"}
 
-        mcp_client = MCPClient(
-            lambda: streamablehttp_client(url=GATEWAY_URL, headers={"Authorization": auth_header})
+    mcp_client = MCPClient(
+        lambda: streamablehttp_client(
+            url=GATEWAY_URL,
+            headers={"Authorization": f"Bearer {bearer_token}"},
+        )
+    )
+
+    with mcp_client:
+        # Semantic search for relevant tools
+        search_result = mcp_client.call_tool_sync(
+            tool_use_id=str(uuid.uuid4()),
+            name="x_amz_bedrock_agentcore_search",
+            arguments={"query": user_input},
+        )
+        found_tools = search_result["structuredContent"]["tools"]
+        tools = search_results_to_tools(found_tools, mcp_client)
+
+        model_kwargs = {
+            "model_id": model_id,
+            "temperature": 0.1,
+            "max_tokens": 1024,
+            "stop_sequences": ["###", "END_RESPONSE"],
+            "cache_tools": "default",
+            "region_name": os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
+        }
+
+        if GUARDRAIL_ID:
+            model_kwargs["guardrail_id"] = GUARDRAIL_ID
+            model_kwargs["guardrail_version"] = "DRAFT"
+            model_kwargs["guardrail_trace"] = "enabled"
+
+        agent = Agent(
+            model=BedrockModel(**model_kwargs),
+            tools=tools,
+            system_prompt=SYSTEM_PROMPT,
+            name="customer-support-v6-gateway",
+            trace_attributes={
+                "version": "v6-gateway",
+                "tools_loaded": len(tools),
+                "query_complexity": complexity,
+                "langfuse.tags": ["gateway", "semantic-search"],
+            },
         )
 
-        with mcp_client:
-            # Semantic search for relevant tools
-            search_result = mcp_client.call_tool_sync(
-                "x_amz_bedrock_agentcore_search",
-                {"query": user_input}
-            )
-            relevant_tools = search_result.content
-            tools_loaded = len(relevant_tools)
-            print(f"V6 GATEWAY: Loaded {tools_loaded} relevant tools via semantic search")
+        response = agent(user_input)
+        response_text = response.message["content"][0]["text"]
 
-            model_kwargs = {
-                "model_id": model_id,
-                "temperature": 0.3,
-                "max_tokens": 500,
-                "stop_sequences": ["###", "END_RESPONSE"],
-                "cache_tools": "default",
-                "region_name": os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
-            }
+        telemetry.tracer_provider.force_flush()
 
-            if GUARDRAIL_ID:
-                model_kwargs["guardrail_id"] = GUARDRAIL_ID
-                model_kwargs["guardrail_version"] = "DRAFT"
-
-            model = BedrockModel(**model_kwargs)
-
-            agent = Agent(
-                model=model,
-                tools=relevant_tools,
-                system_prompt=SYSTEM_PROMPT,
-                name="customer-support-v6-gateway",
-                trace_attributes={
-                    "version": "v6-gateway",
-                    "tools_loaded": tools_loaded,
-                    "query_complexity": complexity,
-                    "langfuse.tags": ["gateway", "semantic-search"],
-                },
-            )
-
-            response = agent(user_input)
-            response_text = response.message["content"][0]["text"]
-            print(f"V6 GATEWAY: Response: {response_text[:100]}...")
-
-            # Flush telemetry to ensure spans are properly closed with correct timestamps
-            strands_telemetry.tracer_provider.force_flush()
-
-            return {"response": response_text, "tools_loaded": tools_loaded}
-
-    # Fallback: load all tools locally
-    import sys
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from utils.tools import get_return_policy, get_product_info, web_search, get_technical_support
-
-    model = BedrockModel(
-        model_id=model_id,
-        temperature=0.3,
-        max_tokens=500,
-        stop_sequences=["###", "END_RESPONSE"],
-        cache_tools="default",
-        region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
-    )
-
-    agent = Agent(
-        model=model,
-        tools=[get_return_policy, get_product_info, web_search, get_technical_support],
-        system_prompt=SYSTEM_PROMPT,
-        name="customer-support-v6-gateway",
-        trace_attributes={
-            "version": "v6-gateway-fallback",
-            "tools_loaded": 4,
-            "query_complexity": complexity,
-            "langfuse.tags": ["gateway-fallback"],
-        },
-    )
-
-    response = agent(user_input)
-    response_text = response.message["content"][0]["text"]
-    print(f"V6 GATEWAY (fallback): Response: {response_text[:100]}...")
-
-    # Flush telemetry to ensure spans are properly closed with correct timestamps
-    strands_telemetry.tracer_provider.force_flush()
-
-    return {"response": response_text, "tools_loaded": 4}
+        return {"response": response_text, "tools_loaded": len(tools)}
 
 
 if __name__ == "__main__":
