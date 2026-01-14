@@ -3,40 +3,17 @@ V1 Baseline Agent - Intentionally unoptimized for comparison.
 No caching, verbose prompt, no max_tokens limit.
 """
 
-import base64
 import os
+
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
-from dotenv import load_dotenv
 from strands import Agent
 from strands.models import BedrockModel
 from strands.telemetry import StrandsTelemetry
 
-import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.tools import get_return_policy, get_product_info, web_search, get_technical_support
+from utils.agent_config import MODEL_SONNET, setup_langfuse_telemetry
+from utils.tools import get_product_info, get_return_policy, get_technical_support, web_search
 
-load_dotenv()
-
-# Langfuse configuration
-langfuse_public_key = os.environ.get("LANGFUSE_PUBLIC_KEY")
-langfuse_secret_key = os.environ.get("LANGFUSE_SECRET_KEY")
-langfuse_host = os.environ.get("LANGFUSE_HOST", "https://cloud.langfuse.com")
-LANGFUSE_AUTH = base64.b64encode(f"{langfuse_public_key}:{langfuse_secret_key}".encode()).decode()
-
-os.environ["LANGFUSE_PROJECT_NAME"] = "my-llm-project"
-os.environ["DISABLE_ADOT_OBSERVABILITY"] = "true"
-os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = f"{langfuse_host}/api/public/otel"
-os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = f"Authorization=Basic {LANGFUSE_AUTH}"
-
-for k in [
-    "OTEL_EXPORTER_OTLP_LOGS_HEADERS",
-    "AGENT_OBSERVABILITY_ENABLED",
-    "OTEL_PYTHON_DISTRO",
-    "OTEL_RESOURCE_ATTRIBUTES",
-    "OTEL_PYTHON_CONFIGURATOR",
-    "OTEL_PYTHON_EXCLUDED_URLS",
-]:
-    os.environ.pop(k, None)
+setup_langfuse_telemetry()
 
 app = BedrockAgentCoreApp()
 
@@ -164,15 +141,13 @@ to provide the best possible service and support that you can.
 @app.entrypoint
 def invoke(payload):
     user_input = payload.get("prompt", "")
-    print(f"V1 BASELINE: User input: {user_input}")
 
-    # Initialize Langfuse telemetry
-    strands_telemetry = StrandsTelemetry()
-    strands_telemetry.setup_otlp_exporter()
+    telemetry = StrandsTelemetry()
+    telemetry.setup_otlp_exporter()
 
-    # Baseline: No optimizations
+    # Baseline: No optimizations (no max_tokens, no stop_sequences, no caching)
     model = BedrockModel(
-        model_id="us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+        model_id=MODEL_SONNET,
         temperature=0.3,
         region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
     )
@@ -190,10 +165,8 @@ def invoke(payload):
 
     response = agent(user_input)
     response_text = response.message["content"][0]["text"]
-    print(f"V1 BASELINE: Response: {response_text[:100]}...")
 
-    # Flush telemetry to ensure spans are properly closed with correct timestamps
-    strands_telemetry.tracer_provider.force_flush()
+    telemetry.tracer_provider.force_flush()
 
     return response_text
 
