@@ -45,8 +45,8 @@ Advanced prompt engineering techniques and complex caching patterns.
 
 | Topic | Duration | Description |
 |-------|----------|-------------|
-| Advanced Prompt Engineering | 60-90 min | CoT, Self-Refine, CoD, technique selection |
-| Advanced Prompt Caching | 60 min | Multi-checkpoint patterns, cache strategies |
+| [Advanced Prompt Engineering](./03-advanced-concepts/01-advanced-prompt-engineering.ipynb) | 60 min | CoT, Self-Critical, CoD, technique selection etc. |
+| [Advanced Prompt Caching](./03-advanced-concepts/02-advanced-prompt-caching.ipynb) | 60 min | Multi-checkpoint patterns, cache strategies etc. |
 | TBD | TBD | TBD |
 
 ---
@@ -153,7 +153,12 @@ The notebooks will automatically load credentials using `python-dotenv`.
 ### 3. Test Bedrock Connectivity
 
 ```bash
-python -c "from dotenv import load_dotenv; load_dotenv(); import boto3; client = boto3.client('bedrock-runtime'); print('Bedrock connection successful'); print(f'Region: {client.meta.region_name}')"
+python -c "
+import boto3
+client = boto3.client('bedrock-runtime', region_name='us-east-1')
+print('Bedrock connection successful!')
+print(f'Region: {client.meta.region_name}')
+"
 ```
 
 ---

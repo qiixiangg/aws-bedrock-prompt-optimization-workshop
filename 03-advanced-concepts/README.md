@@ -14,7 +14,7 @@ After completing this section, you will:
 
 | Notebook | Duration | Description |
 |----------|----------|-------------|
-| 01-advanced-prompt-engineering| 60-90 min | Technique categories, optimization workflows |
+| [01-advanced-prompt-engineering](./01-advanced-prompt-engineering.ipynb)| 60 min | Technique categories, optimization workflows |
 | [02-advanced-prompt-caching](./02-advanced-prompt-caching.ipynb) | 60 min | Multi-checkpoint patterns, cache strategies |
 | 03-prompt-version-control | TBD | CI/CD |
 | 04-llm-routing | TBD | Model routing |
