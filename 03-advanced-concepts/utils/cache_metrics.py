@@ -1,6 +1,7 @@
 """
 Cache metrics utilities for advanced prompt caching module.
 """
+from __future__ import annotations
 
 
 def extract_cache_metrics(response):

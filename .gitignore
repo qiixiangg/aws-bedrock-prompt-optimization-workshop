@@ -50,3 +50,11 @@ credentials
 # OS
 .DS_Store
 Thumbs.db
+
+# AgentCore generated files
+.bedrock_agentcore.yaml
+Dockerfile
+.dockerignore
+
+# uv lock file
+uv.lock

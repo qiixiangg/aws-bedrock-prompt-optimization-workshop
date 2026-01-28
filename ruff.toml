@@ -1,0 +1,37 @@
+# Ruff configuration (based on ruff's own config)
+# https://github.com/astral-sh/ruff/blob/main/pyproject.toml
+
+target-version = "py311"
+line-length = 119
+
+extend-exclude = [
+    ".venv",
+    ".build",
+    "node_modules",
+]
+
+[lint]
+select = [
+    "E",    # pycodestyle (error)
+    "F",    # pyflakes
+    "B",    # bugbear
+    "B9",
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+    "I",    # isort
+    "UP",   # pyupgrade
+    "PIE",  # flake8-pie
+    "PGH",  # pygrep-hooks
+    "PYI",  # flake8-pyi
+    "RUF",  # ruff-specific rules
+]
+
+ignore = [
+    "B011",  # assert-false
+    "E501",  # line-too-long
+]
+
+[lint.isort]
+required-imports = ["from __future__ import annotations"]
+combine-as-imports = true
+known-first-party = ["agents", "utils"]

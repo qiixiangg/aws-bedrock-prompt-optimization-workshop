@@ -22,7 +22,7 @@ After completing this section, you will:
 
 ## Prerequisites
 
-- Complete [01-basis](../01-basis/) first
+- Complete [01-basics](../01-basics/) first
 - AWS Account with Amazon Bedrock access
 - Python 3.10+
 
