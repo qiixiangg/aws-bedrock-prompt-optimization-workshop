@@ -60,3 +60,5 @@ Dockerfile
 uv.lock
 
 .ruff_cache/
+
+.claude/
