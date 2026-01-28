@@ -164,7 +164,7 @@ def print_pricing_table():
     print(f"{'Model':<30} {'Input':>10} {'Output':>10} {'Cache Write':>14} {'Cache Read':>14}")
     print(f"{'':<30} {'':>10} {'':>10} {'(5m, 1.25x)':>14} {'(5m, 0.1x)':>14}")
     print("-" * 90)
-    for model_id, prices in PRICING.items():
+    for _model_id, prices in PRICING.items():
         print(f"{prices['name']:<30} ${prices['input']:>8.2f} ${prices['output']:>8.2f} "
               f"${prices['cache_write_5m']:>12.2f} ${prices['cache_read_5m']:>12.2f}")
     print("=" * 90)

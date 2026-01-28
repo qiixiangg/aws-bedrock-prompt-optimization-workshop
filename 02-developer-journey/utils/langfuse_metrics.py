@@ -343,10 +343,10 @@ def print_comparison(
     prev_latency: float,
     prev_input_tokens: int,
     prev_output_tokens: int,
-    curr_cost: float = None,
-    curr_latency: float = None,
-    curr_input_tokens: int = None,
-    curr_output_tokens: int = None,
+    curr_cost: float | None = None,
+    curr_latency: float | None = None,
+    curr_input_tokens: int | None = None,
+    curr_output_tokens: int | None = None,
 ) -> None:
     """
     Print a comparison table between two versions.

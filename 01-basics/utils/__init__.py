@@ -16,17 +16,15 @@ from .pricing import (
 )
 
 __all__ = [
-    # Cache metrics
-    'extract_cache_metrics',
-    'print_cache_metrics',
-    'calculate_cache_savings',
-    # Pricing
-    'PRICING',
-    'OUTPUT_BURNDOWN_RATE',
-    'calculate_cost',
-    'calculate_actual_cost',
-    'compare_optimization',
-    'calculate_tpm_reservation',
-    'calculate_tpm_actual',
-    'print_pricing_table'
+    "OUTPUT_BURNDOWN_RATE",
+    "PRICING",
+    "calculate_actual_cost",
+    "calculate_cache_savings",
+    "calculate_cost",
+    "calculate_tpm_actual",
+    "calculate_tpm_reservation",
+    "compare_optimization",
+    "extract_cache_metrics",
+    "print_cache_metrics",
+    "print_pricing_table",
 ]

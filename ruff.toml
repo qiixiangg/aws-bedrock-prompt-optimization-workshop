@@ -29,6 +29,7 @@ select = [
 ignore = [
     "B011",  # assert-false
     "E501",  # line-too-long
+    "E402",  # module-import-not-at-top-of-file (notebooks need load_dotenv() first)
 ]
 
 [lint.isort]

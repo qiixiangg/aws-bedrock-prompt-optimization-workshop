@@ -13,7 +13,7 @@ import boto3
 from bedrock_agentcore_starter_toolkit import Runtime
 
 
-def get_clients(region: str = None):
+def get_clients(region: str | None = None):
     """Get boto3 clients for AgentCore."""
     region = region or os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
     control_client = boto3.client("bedrock-agentcore-control", region_name=region)
@@ -26,8 +26,8 @@ def deploy_agent_to_runtime(
     agent_file: str,
     requirements_file: str,
     region: str,
-    env_vars: dict = None,
-    execution_role_arn: str = None,
+    env_vars: dict | None = None,
+    execution_role_arn: str | None = None,
 ) -> str:
     """Deploy agent to AgentCore Runtime with Langfuse integration."""
     agentcore_runtime = Runtime()

@@ -63,7 +63,7 @@ def get_warranty_status_text(days_remaining: int) -> str:
         return "❌ Expired"
 
 
-def check_warranty_status(serial_number: str, customer_email: str = None) -> str:
+def check_warranty_status(serial_number: str, customer_email: str | None = None) -> str:
     """
     Check the warranty status of a product using its serial number.
 
@@ -186,7 +186,7 @@ def check_warranty_status(serial_number: str, customer_email: str = None) -> str
         logger.error("DynamoDB Error:", e)
         raise Exception(
             f"Failed to check warranty status: {e.response['Error']['Message']}"
-        )
+        ) from e
     except Exception as e:
         logger.error("Unexpected Error:", str(e))
-        raise Exception(f"Failed to check warranty status: {e!s}")
+        raise Exception(f"Failed to check warranty status: {e!s}") from e
