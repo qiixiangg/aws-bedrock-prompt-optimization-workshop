@@ -1,6 +1,7 @@
 """
 Utility functions for prompt caching workshops.
 """
+
 from __future__ import annotations
 
 from .cache_metrics import calculate_cache_savings, extract_cache_metrics, print_cache_metrics

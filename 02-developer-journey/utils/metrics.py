@@ -86,8 +86,12 @@ def print_comparison(baseline: dict, optimized: dict, baseline_model: str = "son
     print(f"{'Latency (ms)':<25} {base_latency:>15,.0f} {opt_latency:>15,.0f} {latency_change_str:>10}")
 
     # Cost
-    cost_change_str = f"{((optimized_cost - baseline_cost) / baseline_cost) * 100:+.1f}%" if baseline_cost > 0 else "N/A"
-    print(f"{'Estimated Cost':<25} {format_cost(baseline_cost):>15} {format_cost(optimized_cost):>15} {cost_change_str:>10}")
+    cost_change_str = (
+        f"{((optimized_cost - baseline_cost) / baseline_cost) * 100:+.1f}%" if baseline_cost > 0 else "N/A"
+    )
+    print(
+        f"{'Estimated Cost':<25} {format_cost(baseline_cost):>15} {format_cost(optimized_cost):>15} {cost_change_str:>10}"
+    )
 
     print("-" * 65)
 

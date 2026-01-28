@@ -1,6 +1,7 @@
 """
 Helper functions for deploying and invoking AgentCore Runtime agents.
 """
+
 from __future__ import annotations
 
 import json
@@ -114,21 +115,25 @@ def run_test_scenarios(data_client, agent_arn: str, scenarios: list) -> list:
         try:
             response = invoke_agent(data_client, agent_arn, scenario["query"])
             latency = (time.time() - start_time) * 1000
-            results.append({
-                "scenario_id": scenario["id"],
-                "query": scenario["query"],
-                "response": response,
-                "latency_ms": latency,
-                "success": True,
-            })
+            results.append(
+                {
+                    "scenario_id": scenario["id"],
+                    "query": scenario["query"],
+                    "response": response,
+                    "latency_ms": latency,
+                    "success": True,
+                }
+            )
         except Exception as e:
-            results.append({
-                "scenario_id": scenario["id"],
-                "query": scenario["query"],
-                "error": str(e),
-                "latency_ms": (time.time() - start_time) * 1000,
-                "success": False,
-            })
+            results.append(
+                {
+                    "scenario_id": scenario["id"],
+                    "query": scenario["query"],
+                    "error": str(e),
+                    "latency_ms": (time.time() - start_time) * 1000,
+                    "success": False,
+                }
+            )
     return results
 
 

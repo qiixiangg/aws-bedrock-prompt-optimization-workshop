@@ -5,6 +5,7 @@ V3 Caching Agent - Same as v2 + prompt caching.
 - Tool definition caching with cache_tools="default" on BedrockModel
 - Note: System prompt must be 1,024+ tokens for caching to activate
 """
+
 from __future__ import annotations
 
 import os

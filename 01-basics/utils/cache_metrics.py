@@ -6,6 +6,7 @@ This module provides helper functions to:
 - Display cache metrics in a readable format
 - Calculate cost savings from caching
 """
+
 from __future__ import annotations
 
 
@@ -23,13 +24,13 @@ def extract_cache_metrics(response):
             - cache_write: Cache write input tokens (first occurrence)
             - cache_read: Cache read input tokens (cached content reused)
     """
-    usage = response.get('usage', {})
+    usage = response.get("usage", {})
 
     metrics = {
-        'input_tokens': usage.get('inputTokens', 0),
-        'output_tokens': usage.get('outputTokens', 0),
-        'cache_write': usage.get('cacheWriteInputTokens', 0),
-        'cache_read': usage.get('cacheReadInputTokens', 0)
+        "input_tokens": usage.get("inputTokens", 0),
+        "output_tokens": usage.get("outputTokens", 0),
+        "cache_write": usage.get("cacheWriteInputTokens", 0),
+        "cache_read": usage.get("cacheReadInputTokens", 0),
     }
 
     return metrics
@@ -45,15 +46,15 @@ def print_cache_metrics(metrics, request_num=None):
     """
     header = f"Request {request_num}" if request_num else "Cache Metrics"
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"{header}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(f"Input tokens:       {metrics['input_tokens']:,}")
     print(f"Output tokens:      {metrics['output_tokens']:,}")
     print(f"Cache write tokens: {metrics['cache_write']:,}")
     print(f"Cache read tokens:  {metrics['cache_read']:,}")
 
-    print(f"{'='*60}\n")  # Extra newline for spacing
+    print(f"{'=' * 60}\n")  # Extra newline for spacing
 
 
 def calculate_cache_savings(all_metrics, input_price_per_million=3.0):
@@ -82,17 +83,17 @@ def calculate_cache_savings(all_metrics, input_price_per_million=3.0):
             - total_cache_write: Total cache write tokens
             - total_cache_read: Total cache read tokens
     """
-    total_input = sum(m['input_tokens'] for m in all_metrics)
-    total_cache_write = sum(m['cache_write'] for m in all_metrics)
-    total_cache_read = sum(m['cache_read'] for m in all_metrics)
+    total_input = sum(m["input_tokens"] for m in all_metrics)
+    total_cache_write = sum(m["cache_write"] for m in all_metrics)
+    total_cache_read = sum(m["cache_read"] for m in all_metrics)
 
     # Cost with caching
     # Note: inputTokens from Bedrock = only NEW tokens (not cached)
     # So we don't need to subtract cache tokens - they're already separate!
     cost_with_cache = (
-        (total_input / 1_000_000) * input_price_per_million +
-        (total_cache_write / 1_000_000) * input_price_per_million * 1.25 +
-        (total_cache_read / 1_000_000) * input_price_per_million * 0.1
+        (total_input / 1_000_000) * input_price_per_million
+        + (total_cache_write / 1_000_000) * input_price_per_million * 1.25
+        + (total_cache_read / 1_000_000) * input_price_per_million * 0.1
     )
 
     # Cost without caching (all tokens at regular price)
@@ -110,12 +111,12 @@ def calculate_cache_savings(all_metrics, input_price_per_million=3.0):
     cache_hit_rate = (total_cache_read / total_cacheable * 100) if total_cacheable > 0 else 0
 
     return {
-        'total_requests': len(all_metrics),
-        'cost_with_cache': cost_with_cache,
-        'cost_no_cache': cost_no_cache,
-        'savings': savings,
-        'savings_pct': savings_pct,
-        'cache_hit_rate': cache_hit_rate,
-        'total_cache_write': total_cache_write,
-        'total_cache_read': total_cache_read
+        "total_requests": len(all_metrics),
+        "cost_with_cache": cost_with_cache,
+        "cost_no_cache": cost_no_cache,
+        "savings": savings,
+        "savings_pct": savings_pct,
+        "cache_hit_rate": cache_hit_rate,
+        "total_cache_write": total_cache_write,
+        "total_cache_read": total_cache_read,
     }

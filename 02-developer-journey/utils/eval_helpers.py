@@ -1,6 +1,7 @@
 """
 Evaluation helper functions for comparing agent versions.
 """
+
 from __future__ import annotations
 
 import json
@@ -28,22 +29,26 @@ def run_evaluation_suite(data_client, agent_arn: str, scenarios: list, version_n
         print(f"  [{scenario['id']}] {scenario['query'][:50]}...")
         try:
             response, latency_ms = invoke_agent_with_timing(data_client, agent_arn, scenario["query"])
-            results.append({
-                "scenario_id": scenario["id"],
-                "query": scenario["query"],
-                "response": response,
-                "latency_ms": latency_ms,
-                "success": True,
-            })
+            results.append(
+                {
+                    "scenario_id": scenario["id"],
+                    "query": scenario["query"],
+                    "response": response,
+                    "latency_ms": latency_ms,
+                    "success": True,
+                }
+            )
             total_latency += latency_ms
             successful += 1
         except Exception as e:
-            results.append({
-                "scenario_id": scenario["id"],
-                "query": scenario["query"],
-                "error": str(e),
-                "success": False,
-            })
+            results.append(
+                {
+                    "scenario_id": scenario["id"],
+                    "query": scenario["query"],
+                    "error": str(e),
+                    "success": False,
+                }
+            )
             failed += 1
 
     return {
@@ -55,7 +60,7 @@ def run_evaluation_suite(data_client, agent_arn: str, scenarios: list, version_n
             "successful": successful,
             "failed": failed,
             "avg_latency_ms": total_latency / successful if successful > 0 else 0,
-        }
+        },
     }
 
 
@@ -65,13 +70,15 @@ def compare_versions(all_results: dict) -> pd.DataFrame:
     for version_name, eval_result in all_results.items():
         summary = eval_result["summary"]
         success_rate = (summary["successful"] / summary["total_scenarios"]) * 100
-        rows.append({
-            "Version": version_name,
-            "Success Rate": f"{success_rate:.1f}%",
-            "Avg Latency (ms)": f"{summary['avg_latency_ms']:.0f}",
-            "Successful": summary["successful"],
-            "Failed": summary["failed"],
-        })
+        rows.append(
+            {
+                "Version": version_name,
+                "Success Rate": f"{success_rate:.1f}%",
+                "Avg Latency (ms)": f"{summary['avg_latency_ms']:.0f}",
+                "Successful": summary["successful"],
+                "Failed": summary["failed"],
+            }
+        )
     return pd.DataFrame(rows)
 
 

@@ -5,6 +5,7 @@ V4 Routing Agent - Model routing based on query complexity.
 - Simple queries -> Haiku (cheaper)
 - Complex queries -> Sonnet (better quality)
 """
+
 from __future__ import annotations
 
 import json

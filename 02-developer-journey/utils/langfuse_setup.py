@@ -1,6 +1,7 @@
 """
 Langfuse configuration via OpenTelemetry.
 """
+
 from __future__ import annotations
 
 import base64
@@ -37,8 +38,13 @@ def setup_langfuse():
     os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = f"Authorization=Basic {auth}"
 
     # Remove conflicting OTEL vars
-    for var in ["OTEL_EXPORTER_OTLP_LOGS_HEADERS", "AGENT_OBSERVABILITY_ENABLED",
-                "OTEL_PYTHON_DISTRO", "OTEL_RESOURCE_ATTRIBUTES", "OTEL_PYTHON_CONFIGURATOR"]:
+    for var in [
+        "OTEL_EXPORTER_OTLP_LOGS_HEADERS",
+        "AGENT_OBSERVABILITY_ENABLED",
+        "OTEL_PYTHON_DISTRO",
+        "OTEL_RESOURCE_ATTRIBUTES",
+        "OTEL_PYTHON_CONFIGURATOR",
+    ]:
         os.environ.pop(var, None)
 
     telemetry = StrandsTelemetry()

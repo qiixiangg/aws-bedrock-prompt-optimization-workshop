@@ -5,6 +5,7 @@ V2 Quick Wins Agent - Low-effort optimizations.
 - stop_sequences
 - Low temperature for accuracy
 """
+
 from __future__ import annotations
 
 import os

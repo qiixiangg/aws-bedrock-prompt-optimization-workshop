@@ -3,6 +3,7 @@ V5 Guardrails Agent - Bedrock Guardrails for content filtering.
 - Block off-topic queries before LLM processes them
 - Save tokens on irrelevant requests
 """
+
 from __future__ import annotations
 
 import os

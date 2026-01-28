@@ -1,6 +1,7 @@
 """
 V6 Gateway Agent - AgentCore Gateway with semantic tool search.
 """
+
 from __future__ import annotations
 
 import base64

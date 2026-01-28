@@ -14,8 +14,8 @@ PRICING = {
         "input": 3.00,
         "output": 15.00,
         # 5-minute cache pricing (standard TTL)
-        "cache_write_5m": 3.75,   # 1.25x input - first time writing to cache
-        "cache_read_5m": 0.30,    # 0.1x input - 90% savings on cache hits!
+        "cache_write_5m": 3.75,  # 1.25x input - first time writing to cache
+        "cache_read_5m": 0.30,  # 0.1x input - 90% savings on cache hits!
     },
     "global.anthropic.claude-3-5-haiku-20241022-v1:0": {
         "name": "Claude Haiku 4.5 (Global)",
@@ -30,8 +30,7 @@ PRICING = {
 OUTPUT_BURNDOWN_RATE = 5  # For Claude Sonnet 4.5 and newer
 
 
-def calculate_cost(input_tokens, output_tokens, num_requests, model_id,
-                   cache_write_tokens=0, cache_read_tokens=0):
+def calculate_cost(input_tokens, output_tokens, num_requests, model_id, cache_write_tokens=0, cache_read_tokens=0):
     """
     Calculate the cost for Bedrock inference requests.
 
@@ -70,7 +69,7 @@ def calculate_cost(input_tokens, output_tokens, num_requests, model_id,
         "output_cost": output_cost,
         "cache_write_cost": cache_write_cost,
         "cache_read_cost": cache_read_cost,
-        "total_cost": total_cost
+        "total_cost": total_cost,
     }
 
 
@@ -115,12 +114,7 @@ def compare_optimization(original_tokens, optimized_tokens, output_tokens, num_r
     savings = original["total_cost"] - optimized["total_cost"]
     savings_pct = (savings / original["total_cost"]) * 100 if original["total_cost"] > 0 else 0
 
-    return {
-        "original": original,
-        "optimized": optimized,
-        "savings": savings,
-        "savings_pct": savings_pct
-    }
+    return {"original": original, "optimized": optimized, "savings": savings, "savings_pct": savings_pct}
 
 
 def calculate_tpm_reservation(input_tokens, max_tokens, burndown_rate=OUTPUT_BURNDOWN_RATE):
@@ -138,8 +132,7 @@ def calculate_tpm_reservation(input_tokens, max_tokens, burndown_rate=OUTPUT_BUR
     return input_tokens + (max_tokens * burndown_rate)
 
 
-def calculate_tpm_actual(input_tokens, output_tokens, cache_write_tokens=0,
-                         burndown_rate=OUTPUT_BURNDOWN_RATE):
+def calculate_tpm_actual(input_tokens, output_tokens, cache_write_tokens=0, burndown_rate=OUTPUT_BURNDOWN_RATE):
     """
     Calculate ACTUAL TPM consumption after request completes.
 
@@ -165,7 +158,9 @@ def print_pricing_table():
     print(f"{'':<30} {'':>10} {'':>10} {'(5m, 1.25x)':>14} {'(5m, 0.1x)':>14}")
     print("-" * 90)
     for _model_id, prices in PRICING.items():
-        print(f"{prices['name']:<30} ${prices['input']:>8.2f} ${prices['output']:>8.2f} "
-              f"${prices['cache_write_5m']:>12.2f} ${prices['cache_read_5m']:>12.2f}")
+        print(
+            f"{prices['name']:<30} ${prices['input']:>8.2f} ${prices['output']:>8.2f} "
+            f"${prices['cache_write_5m']:>12.2f} ${prices['cache_read_5m']:>12.2f}"
+        )
     print("=" * 90)
     print("\nNote: Cache pricing shown is for 5-minute TTL cache.")

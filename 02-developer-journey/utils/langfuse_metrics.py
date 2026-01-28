@@ -1,6 +1,7 @@
 """
 Langfuse metrics helper - Query traces directly to get accurate metrics.
 """
+
 from __future__ import annotations
 
 import os
@@ -47,42 +48,50 @@ def print_metrics_table():
         rows = []
         for m in _collected_metrics:
             if "error" not in m:
-                rows.append({
-                    "Test": m.get("test_name", ""),
-                    "Latency": f"{m.get('latency_seconds', 0):.2f}s" if m.get('latency_seconds') else "N/A",
-                    "Cost": f"${m.get('cost_usd', 0):.4f}",
-                    "Input": f"{m.get('input_tokens', 0):,}",
-                    "Output": f"{m.get('output_tokens', 0):,}",
-                    "Cache Read Tokens": f"{m.get('cache_read_tokens', 0):,}",
-                    "Cache Write Tokens": f"{m.get('cache_write_tokens', 0):,}",
-                })
+                rows.append(
+                    {
+                        "Test": m.get("test_name", ""),
+                        "Latency": f"{m.get('latency_seconds', 0):.2f}s" if m.get("latency_seconds") else "N/A",
+                        "Cost": f"${m.get('cost_usd', 0):.4f}",
+                        "Input": f"{m.get('input_tokens', 0):,}",
+                        "Output": f"{m.get('output_tokens', 0):,}",
+                        "Cache Read Tokens": f"{m.get('cache_read_tokens', 0):,}",
+                        "Cache Write Tokens": f"{m.get('cache_write_tokens', 0):,}",
+                    }
+                )
             else:
-                rows.append({
-                    "Test": m.get("test_name", ""),
-                    "Latency": "ERROR",
-                    "Cost": "-",
-                    "Input": "-",
-                    "Output": "-",
-                    "Cache Read Tokens": "-",
-                    "Cache Write Tokens": "-",
-                })
+                rows.append(
+                    {
+                        "Test": m.get("test_name", ""),
+                        "Latency": "ERROR",
+                        "Cost": "-",
+                        "Input": "-",
+                        "Output": "-",
+                        "Cache Read Tokens": "-",
+                        "Cache Write Tokens": "-",
+                    }
+                )
 
         df = pd.DataFrame(rows)
 
         # Calculate totals
-        total_cost = sum(m.get('cost_usd', 0) for m in _collected_metrics if "error" not in m)
-        total_input = sum(m.get('input_tokens', 0) for m in _collected_metrics if "error" not in m)
-        total_output = sum(m.get('output_tokens', 0) for m in _collected_metrics if "error" not in m)
-        total_cache_read = sum(m.get('cache_read_tokens', 0) for m in _collected_metrics if "error" not in m)
-        total_cache_write = sum(m.get('cache_write_tokens', 0) for m in _collected_metrics if "error" not in m)
-        avg_latency = sum(m.get('latency_seconds', 0) or 0 for m in _collected_metrics if "error" not in m) / max(len([m for m in _collected_metrics if "error" not in m]), 1)
+        total_cost = sum(m.get("cost_usd", 0) for m in _collected_metrics if "error" not in m)
+        total_input = sum(m.get("input_tokens", 0) for m in _collected_metrics if "error" not in m)
+        total_output = sum(m.get("output_tokens", 0) for m in _collected_metrics if "error" not in m)
+        total_cache_read = sum(m.get("cache_read_tokens", 0) for m in _collected_metrics if "error" not in m)
+        total_cache_write = sum(m.get("cache_write_tokens", 0) for m in _collected_metrics if "error" not in m)
+        avg_latency = sum(m.get("latency_seconds", 0) or 0 for m in _collected_metrics if "error" not in m) / max(
+            len([m for m in _collected_metrics if "error" not in m]), 1
+        )
 
         print("\n" + "=" * 105)
         print("                                  METRICS SUMMARY")
         print("=" * 105)
         print(df.to_string(index=False))
         print("-" * 105)
-        print(f"  TOTALS: Latency(avg): {avg_latency:.2f}s | Cost: ${total_cost:.4f} | Input: {total_input:,} | Output: {total_output:,}")
+        print(
+            f"  TOTALS: Latency(avg): {avg_latency:.2f}s | Cost: ${total_cost:.4f} | Input: {total_input:,} | Output: {total_output:,}"
+        )
         print(f"          Cache Read Tokens: {total_cache_read:,} | Cache Write Tokens: {total_cache_write:,}")
         print("=" * 105 + "\n")
 
@@ -93,7 +102,9 @@ def print_metrics_table():
         print("\n" + "=" * 120)
         print("                                           METRICS SUMMARY")
         print("=" * 120)
-        print(f"{'Test':<20} {'Latency':>8} {'Cost':>10} {'Input':>10} {'Output':>10} {'Cache Read Tokens':>18} {'Cache Write Tokens':>19}")
+        print(
+            f"{'Test':<20} {'Latency':>8} {'Cost':>10} {'Input':>10} {'Output':>10} {'Cache Read Tokens':>18} {'Cache Write Tokens':>19}"
+        )
         print("-" * 120)
 
         total_cost = 0
@@ -107,19 +118,19 @@ def print_metrics_table():
         for m in _collected_metrics:
             test = m.get("test_name", "")[:19]
             if "error" not in m:
-                lat = f"{m.get('latency_seconds', 0):.2f}s" if m.get('latency_seconds') else "N/A"
+                lat = f"{m.get('latency_seconds', 0):.2f}s" if m.get("latency_seconds") else "N/A"
                 cost = f"${m.get('cost_usd', 0):.4f}"
                 inp = f"{m.get('input_tokens', 0):,}"
                 out = f"{m.get('output_tokens', 0):,}"
                 c_read = f"{m.get('cache_read_tokens', 0):,}"
                 c_write = f"{m.get('cache_write_tokens', 0):,}"
 
-                total_cost += m.get('cost_usd', 0)
-                total_input += m.get('input_tokens', 0)
-                total_output += m.get('output_tokens', 0)
-                total_cache_read += m.get('cache_read_tokens', 0)
-                total_cache_write += m.get('cache_write_tokens', 0)
-                total_latency += m.get('latency_seconds', 0) or 0
+                total_cost += m.get("cost_usd", 0)
+                total_input += m.get("input_tokens", 0)
+                total_output += m.get("output_tokens", 0)
+                total_cache_read += m.get("cache_read_tokens", 0)
+                total_cache_write += m.get("cache_write_tokens", 0)
+                total_latency += m.get("latency_seconds", 0) or 0
                 count += 1
             else:
                 lat, cost, inp, out, c_read, c_write = "ERROR", "-", "-", "-", "-", "-"
@@ -128,7 +139,9 @@ def print_metrics_table():
 
         print("-" * 120)
         avg_lat = total_latency / max(count, 1)
-        print(f"{'TOTALS':<20} {f'{avg_lat:.2f}s':>8} {f'${total_cost:.4f}':>10} {f'{total_input:,}':>10} {f'{total_output:,}':>10} {f'{total_cache_read:,}':>18} {f'{total_cache_write:,}':>19}")
+        print(
+            f"{'TOTALS':<20} {f'{avg_lat:.2f}s':>8} {f'${total_cost:.4f}':>10} {f'{total_input:,}':>10} {f'{total_output:,}':>10} {f'{total_cache_read:,}':>18} {f'{total_cache_write:,}':>19}"
+        )
         print("=" * 120 + "\n")
 
 
@@ -190,7 +203,7 @@ def get_latest_trace_metrics(
     # Find the latest trace for this agent
     latest_trace = None
     for trace in traces.data:
-        trace_name = getattr(trace, 'name', '') or ''
+        trace_name = getattr(trace, "name", "") or ""
         if agent_name in trace_name:
             latest_trace = trace
             break
@@ -203,7 +216,7 @@ def get_latest_trace_metrics(
     # Get observations for this trace
     try:
         obs_response = langfuse.api.observations.get_many(trace_id=trace_id, limit=50)
-        observations = obs_response.data if hasattr(obs_response, 'data') else []
+        observations = obs_response.data if hasattr(obs_response, "data") else []
     except Exception:
         observations = []
 
@@ -215,12 +228,13 @@ def get_latest_trace_metrics(
             return int(val)
         if isinstance(val, str):
             # Check if it's a JSON string like '{"intValue":0}'
-            if val.startswith('{'):
+            if val.startswith("{"):
                 try:
                     import json
+
                     parsed = json.loads(val)
                     if isinstance(parsed, dict):
-                        return int(parsed.get('intValue', 0) or 0)
+                        return int(parsed.get("intValue", 0) or 0)
                 except (json.JSONDecodeError, ValueError):
                     pass
             # Try direct int conversion
@@ -230,7 +244,7 @@ def get_latest_trace_metrics(
                 return 0
         if isinstance(val, dict):
             # OTEL sometimes stores as {"intValue": 123}
-            return int(val.get('intValue', 0) or 0)
+            return int(val.get("intValue", 0) or 0)
         return 0
 
     # Calculate metrics from observations - only count GENERATION type to avoid double-counting
@@ -241,46 +255,44 @@ def get_latest_trace_metrics(
     total_cost = 0.0
 
     for obs in observations:
-        obs_type = getattr(obs, 'type', None)
+        obs_type = getattr(obs, "type", None)
         # Only count GENERATION observations to avoid double-counting with spans
-        if obs_type != 'GENERATION':
+        if obs_type != "GENERATION":
             continue
 
-        usage = getattr(obs, 'usage', None) or {}
-        metadata = getattr(obs, 'metadata', None) or {}
+        usage = getattr(obs, "usage", None) or {}
+        metadata = getattr(obs, "metadata", None) or {}
 
         # Extract from usage dict
         if isinstance(usage, dict):
-            inp = safe_int(usage.get('input') or usage.get('promptTokens') or usage.get('input_tokens'))
-            out = safe_int(usage.get('output') or usage.get('completionTokens') or usage.get('output_tokens'))
+            inp = safe_int(usage.get("input") or usage.get("promptTokens") or usage.get("input_tokens"))
+            out = safe_int(usage.get("output") or usage.get("completionTokens") or usage.get("output_tokens"))
             # Cache metrics - check multiple possible locations
             cache_read = safe_int(
-                usage.get('cache_read_input_tokens') or
-                usage.get('cacheReadInputTokens') or
-                usage.get('cacheRead')
+                usage.get("cache_read_input_tokens") or usage.get("cacheReadInputTokens") or usage.get("cacheRead")
             )
             cache_write = safe_int(
-                usage.get('cache_creation_input_tokens') or
-                usage.get('cacheWriteInputTokens') or
-                usage.get('cacheCreationInputTokens') or
-                usage.get('cacheWrite')
+                usage.get("cache_creation_input_tokens")
+                or usage.get("cacheWriteInputTokens")
+                or usage.get("cacheCreationInputTokens")
+                or usage.get("cacheWrite")
             )
         else:
-            inp = safe_int(getattr(usage, 'input', None) or getattr(usage, 'prompt_tokens', None))
-            out = safe_int(getattr(usage, 'output', None) or getattr(usage, 'completion_tokens', None))
-            cache_read = safe_int(getattr(usage, 'cache_read_input_tokens', None))
-            cache_write = safe_int(getattr(usage, 'cache_creation_input_tokens', None))
+            inp = safe_int(getattr(usage, "input", None) or getattr(usage, "prompt_tokens", None))
+            out = safe_int(getattr(usage, "output", None) or getattr(usage, "completion_tokens", None))
+            cache_read = safe_int(getattr(usage, "cache_read_input_tokens", None))
+            cache_write = safe_int(getattr(usage, "cache_creation_input_tokens", None))
 
         # Check metadata['attributes'] for OTEL gen_ai attributes
         if isinstance(metadata, dict):
-            attrs = metadata.get('attributes', {})
+            attrs = metadata.get("attributes", {})
             if isinstance(attrs, dict):
                 if cache_read == 0:
-                    cache_read = safe_int(attrs.get('gen_ai.usage.cache_read_input_tokens'))
+                    cache_read = safe_int(attrs.get("gen_ai.usage.cache_read_input_tokens"))
                 if cache_write == 0:
                     cache_write = safe_int(
-                        attrs.get('gen_ai.usage.cache_creation_input_tokens') or
-                        attrs.get('gen_ai.usage.cache_write_input_tokens')
+                        attrs.get("gen_ai.usage.cache_creation_input_tokens")
+                        or attrs.get("gen_ai.usage.cache_write_input_tokens")
                     )
 
         total_input_tokens += inp
@@ -288,17 +300,17 @@ def get_latest_trace_metrics(
         total_cache_read_tokens += cache_read
         total_cache_write_tokens += cache_write
 
-        cost = getattr(obs, 'calculated_total_cost', None) or getattr(obs, 'calculatedTotalCost', 0) or 0
+        cost = getattr(obs, "calculated_total_cost", None) or getattr(obs, "calculatedTotalCost", 0) or 0
         total_cost += float(cost) if cost else 0.0
 
     # Get latency from trace
-    latency_seconds = getattr(latest_trace, 'latency', None)
+    latency_seconds = getattr(latest_trace, "latency", None)
 
     langfuse.shutdown()
 
     return {
         "trace_id": trace_id,
-        "trace_name": getattr(latest_trace, 'name', 'unknown'),
+        "trace_name": getattr(latest_trace, "name", "unknown"),
         "latency_seconds": latency_seconds,
         "cost_usd": total_cost,
         "input_tokens": total_input_tokens,
@@ -313,7 +325,7 @@ def get_latest_trace_metrics(
 def calculate_totals_from_collected() -> dict:
     """Calculate totals from collected metrics."""
     global _collected_metrics
-    metrics = [m for m in _collected_metrics if 'error' not in m]
+    metrics = [m for m in _collected_metrics if "error" not in m]
 
     if not metrics:
         return {
@@ -325,14 +337,14 @@ def calculate_totals_from_collected() -> dict:
             "total_cache_write_tokens": 0,
         }
 
-    latencies = [m.get('latency_seconds', 0) or 0 for m in metrics]
+    latencies = [m.get("latency_seconds", 0) or 0 for m in metrics]
     return {
-        "total_cost": sum(m.get('cost_usd', 0) for m in metrics),
+        "total_cost": sum(m.get("cost_usd", 0) for m in metrics),
         "avg_latency": sum(latencies) / len(latencies) if latencies else 0,
-        "total_input_tokens": sum(m.get('input_tokens', 0) for m in metrics),
-        "total_output_tokens": sum(m.get('output_tokens', 0) for m in metrics),
-        "total_cache_read_tokens": sum(m.get('cache_read_tokens', 0) for m in metrics),
-        "total_cache_write_tokens": sum(m.get('cache_write_tokens', 0) for m in metrics),
+        "total_input_tokens": sum(m.get("input_tokens", 0) for m in metrics),
+        "total_output_tokens": sum(m.get("output_tokens", 0) for m in metrics),
+        "total_cache_read_tokens": sum(m.get("cache_read_tokens", 0) for m in metrics),
+        "total_cache_write_tokens": sum(m.get("cache_write_tokens", 0) for m in metrics),
     }
 
 
@@ -415,8 +427,10 @@ def print_comparison(
 
     print("=" * 70)
     if has_prev_metrics:
-        print(f"\nResult: {-cost_change:.1f}% cost {'reduction' if cost_change < 0 else 'increase'}, "
-              f"{-latency_change:.1f}% latency {'improvement' if latency_change < 0 else 'increase'}")
+        print(
+            f"\nResult: {-cost_change:.1f}% cost {'reduction' if cost_change < 0 else 'increase'}, "
+            f"{-latency_change:.1f}% latency {'improvement' if latency_change < 0 else 'increase'}"
+        )
     else:
         print(f"\n⚠️  Enter your {prev_name} metrics above to see the comparison")
 
@@ -440,7 +454,7 @@ def print_metrics(metrics: dict, test_name: str = "") -> None:
     else:
         print(f"  Trace ID:      {metrics['trace_id']}")
         print("-" * 60)
-        if metrics.get('latency_seconds') is not None:
+        if metrics.get("latency_seconds") is not None:
             print(f"  Latency:       {metrics['latency_seconds']:.2f}s")
         else:
             print("  Latency:       N/A")

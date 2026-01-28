@@ -2,6 +2,7 @@
 V1 Baseline Agent - Intentionally unoptimized for comparison.
 No caching, verbose prompt, no max_tokens limit.
 """
+
 from __future__ import annotations
 
 import os

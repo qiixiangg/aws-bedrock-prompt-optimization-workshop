@@ -2,6 +2,7 @@
 Tool definitions for the customer support agent.
 Adapted from AgentCore E2E sample (lab-01-create-an-agent.ipynb).
 """
+
 from __future__ import annotations
 
 import boto3
@@ -84,13 +85,13 @@ def get_return_policy(product_category: str) -> str:
 
     return f"""Return Policy - {category_name}:
 
-- Return Window: {policy['window']}
-- Condition Requirements: {policy['condition']}
-- Return Process: {policy['process']}
-- Refund Timeline: {policy['refund_time']}
-- Shipping: {policy['shipping']}
-- Warranty: {policy['warranty']}
-- Restocking Fee: {policy['restocking_fee']}
+- Return Window: {policy["window"]}
+- Condition Requirements: {policy["condition"]}
+- Return Process: {policy["process"]}
+- Refund Timeline: {policy["refund_time"]}
+- Shipping: {policy["shipping"]}
+- Warranty: {policy["warranty"]}
+- Restocking Fee: {policy["restocking_fee"]}
 
 For assistance with returns, visit our online RMA portal or contact customer support."""
 
@@ -113,7 +114,7 @@ def get_product_info(product_type: str) -> str:
                 "processor": "Intel Core i7-13700H (14 cores, up to 5.0GHz)",
                 "memory": "16GB DDR5 RAM (upgradeable to 32GB)",
                 "storage": "512GB NVMe SSD (expandable)",
-                "display": "15.6\" FHD IPS, 144Hz refresh rate, 300 nits",
+                "display": '15.6" FHD IPS, 144Hz refresh rate, 300 nits',
                 "graphics": "NVIDIA RTX 4060 6GB",
                 "battery": "72Wh, up to 10 hours",
                 "weight": "4.5 lbs (2.04 kg)",
@@ -130,7 +131,7 @@ def get_product_info(product_type: str) -> str:
                 "processor": "Snapdragon 8 Gen 2",
                 "memory": "8GB RAM",
                 "storage": "256GB (no expansion)",
-                "display": "6.7\" AMOLED, 120Hz, 2400x1080",
+                "display": '6.7" AMOLED, 120Hz, 2400x1080',
                 "camera": "50MP main + 12MP ultrawide + 10MP telephoto",
                 "battery": "5000mAh, 65W fast charging",
                 "os": "Android 14",
@@ -147,7 +148,7 @@ def get_product_info(product_type: str) -> str:
                 "processor": "Apple M2 chip",
                 "memory": "8GB RAM",
                 "storage": "128GB / 256GB / 512GB options",
-                "display": "11\" Liquid Retina, 120Hz ProMotion",
+                "display": '11" Liquid Retina, 120Hz ProMotion',
                 "camera": "12MP rear + 12MP front with Center Stage",
                 "battery": "Up to 10 hours",
                 "connectivity": "Wi-Fi 6E, optional 5G",
@@ -198,21 +199,21 @@ def get_product_info(product_type: str) -> str:
 Featured Items:
 {items_list}
 
-Delivery: {product['delivery']}
+Delivery: {product["delivery"]}
 
 All accessories come with a 90-day warranty."""
 
     specs_list = "\n".join([f"  - {k.title()}: {v}" for k, v in product["specs"].items()])
     colors_list = ", ".join(product.get("colors", []))
 
-    return f"""{product['featured_model']} - {product['price']}
+    return f"""{product["featured_model"]} - {product["price"]}
 
 Specifications:
 {specs_list}
 
 Available Colors: {colors_list}
-In Stock: {'Yes' if product['in_stock'] else 'No'}
-Delivery: {product['delivery']}
+In Stock: {"Yes" if product["in_stock"] else "No"}
+Delivery: {product["delivery"]}
 
 Contact sales for bulk orders or custom configurations."""
 
@@ -269,9 +270,7 @@ def get_technical_support(issue_description: str) -> str:
         account_id = boto3.client("sts").get_caller_identity()["Account"]
         region = boto3.Session().region_name
 
-        kb_id = ssm.get_parameter(Name=f"/{account_id}-{region}/kb/knowledge-base-id")[
-            "Parameter"
-        ]["Value"]
+        kb_id = ssm.get_parameter(Name=f"/{account_id}-{region}/kb/knowledge-base-id")["Parameter"]["Value"]
 
         # Use strands retrieve tool to query Bedrock Knowledge Base
         tool_use = {

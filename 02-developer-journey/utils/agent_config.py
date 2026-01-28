@@ -2,6 +2,7 @@
 Shared configuration for all agent versions.
 Contains model IDs, system prompts, and common utilities.
 """
+
 from __future__ import annotations
 
 import base64
@@ -35,8 +36,16 @@ def setup_langfuse_telemetry():
 def classify_query_complexity(query: str) -> str:
     """Classify query as 'simple' or 'complex' for model routing."""
     simple_patterns = [
-        "return policy", "warranty", "price", "hours", "shipping",
-        "what is", "how much", "when does", "do you have", "can i return"
+        "return policy",
+        "warranty",
+        "price",
+        "hours",
+        "shipping",
+        "what is",
+        "how much",
+        "when does",
+        "do you have",
+        "can i return",
     ]
     query_lower = query.lower()
     return "simple" if any(p in query_lower for p in simple_patterns) else "complex"
