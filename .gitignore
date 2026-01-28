@@ -58,3 +58,5 @@ Dockerfile
 
 # uv lock file
 uv.lock
+
+.ruff_cache/
