@@ -10,7 +10,7 @@ import uuid
 
 import requests
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
-from mcp.client.streamable_http import streamablehttp_client
+from mcp.client.streamable_http import streamable_http_client
 from mcp.types import Tool as MCPTool
 from strands import Agent
 from strands.models import BedrockModel
@@ -102,7 +102,7 @@ def invoke(payload, context=None):
         return {"error": "Failed to get Cognito token - check env vars"}
 
     mcp_client = MCPClient(
-        lambda: streamablehttp_client(
+        lambda: streamable_http_client(
             url=GATEWAY_URL,
             headers={"Authorization": f"Bearer {bearer_token}"},
         )
