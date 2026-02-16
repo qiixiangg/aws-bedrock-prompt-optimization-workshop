@@ -4,12 +4,16 @@ Langfuse metrics helper - Query traces directly to get accurate metrics.
 
 from __future__ import annotations
 
+import json
 import os
 import time
+from pathlib import Path
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+METRICS_FILE = Path(".lab_metrics.json")
 
 # Global list to collect metrics across invocations
 _collected_metrics = []
@@ -346,6 +350,57 @@ def calculate_totals_from_collected() -> dict:
         "total_cache_read_tokens": sum(m.get("cache_read_tokens", 0) for m in metrics),
         "total_cache_write_tokens": sum(m.get("cache_write_tokens", 0) for m in metrics),
     }
+
+
+def save_metrics(version: str) -> None:
+    """Save current collected metrics totals for cross-notebook comparison.
+
+    Saves to .lab_metrics.json in the working directory so later notebooks
+    can load previous lab results automatically.
+    """
+    totals = calculate_totals_from_collected()
+
+    data = {}
+    if METRICS_FILE.exists():
+        data = json.loads(METRICS_FILE.read_text())
+
+    data[version] = totals
+    METRICS_FILE.write_text(json.dumps(data, indent=2))
+    print(f"Metrics saved as '{version}' → {METRICS_FILE}")
+
+
+def load_metrics(version: str) -> dict:
+    """Load saved metrics from a previous lab for comparison.
+
+    Returns a dict with: total_cost, avg_latency, total_input_tokens,
+    total_output_tokens, total_cache_read_tokens, total_cache_write_tokens.
+    """
+    empty = {
+        "total_cost": 0,
+        "avg_latency": 0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "total_cache_write_tokens": 0,
+    }
+
+    if not METRICS_FILE.exists():
+        print(f"No saved metrics found. Run the previous lab first.")
+        return empty
+
+    data = json.loads(METRICS_FILE.read_text())
+    if version not in data:
+        available = ", ".join(data.keys()) or "none"
+        print(f"No metrics for '{version}'. Available: {available}")
+        return empty
+
+    metrics = data[version]
+    print(
+        f"Loaded '{version}' metrics: cost=${metrics['total_cost']:.4f}, "
+        f"latency={metrics['avg_latency']:.2f}s, "
+        f"input={metrics['total_input_tokens']:,}, output={metrics['total_output_tokens']:,}"
+    )
+    return metrics
 
 
 def print_comparison(
