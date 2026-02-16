@@ -137,18 +137,35 @@ def run_test_scenarios(data_client, agent_arn: str, scenarios: list) -> list:
     return results
 
 
-def cleanup_agents(control_client, name_prefix: str):
-    """Delete all agents matching name prefix."""
+def cleanup_agents(control_client, name_prefix: str, region: str | None = None):
+    """Delete all agents matching name prefix and their ECR repositories."""
+    region = region or os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
     response = control_client.list_agent_runtimes()
     agents = response.get("agentRuntimes", [])
 
     matching = [a for a in agents if name_prefix in a["agentRuntimeName"]]
     print(f"Found {len(matching)} agents matching '{name_prefix}'")
 
+    ecr_client = boto3.client("ecr", region_name=region)
+
     for agent in matching:
+        agent_name = agent["agentRuntimeName"]
         try:
-            agent_id = agent["agentRuntimeArn"].split("/")[-1]
-            control_client.delete_agent_runtime(agentRuntimeId=agent_id)
-            print(f"Deleted: {agent['agentRuntimeName']}")
+            rt = Runtime()
+            rt.configure(agent_name=agent_name, region=region)
+            rt.destroy(delete_ecr_repo=True)
+            print(f"Deleted agent and ECR repository: {agent_name}")
         except Exception as e:
-            print(f"Failed to delete {agent['agentRuntimeName']}: {e}")
+            print(f"Failed to delete {agent_name} via SDK, falling back to boto3: {e}")
+            try:
+                agent_id = agent["agentRuntimeArn"].split("/")[-1]
+                control_client.delete_agent_runtime(agentRuntimeId=agent_id)
+                print(f"Deleted agent: {agent_name}")
+                ecr_repo_name = f"bedrock-agentcore-{agent_name}"
+                try:
+                    ecr_client.delete_repository(repositoryName=ecr_repo_name, force=True)
+                    print(f"Deleted ECR repository: {ecr_repo_name}")
+                except ecr_client.exceptions.RepositoryNotFoundException:
+                    pass
+            except Exception as e2:
+                print(f"Failed to delete {agent_name}: {e2}")

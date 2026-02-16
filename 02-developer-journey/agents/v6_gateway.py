@@ -8,6 +8,7 @@ import base64
 import os
 import uuid
 
+import httpx
 import requests
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
 from mcp.client.streamable_http import streamable_http_client
@@ -104,7 +105,9 @@ def invoke(payload, context=None):
     mcp_client = MCPClient(
         lambda: streamable_http_client(
             url=GATEWAY_URL,
-            headers={"Authorization": f"Bearer {bearer_token}"},
+            http_client=httpx.AsyncClient(
+                headers={"Authorization": f"Bearer {bearer_token}"},
+            ),
         )
     )
 

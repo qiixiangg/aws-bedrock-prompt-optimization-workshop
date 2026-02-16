@@ -51,13 +51,9 @@ def classify_query_complexity(query: str) -> str:
     return "simple" if any(p in query_lower for p in simple_patterns) else "complex"
 
 
-# Model IDs for Bedrock
-MODEL_SONNET = "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
-MODEL_HAIKU = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
-
 # Cross-region inference model IDs
-MODEL_SONNET_GLOBAL = "global.anthropic.claude-sonnet-4-5-20250929-v1:0"
-MODEL_HAIKU_GLOBAL = "global.anthropic.claude-haiku-4-5-20251001-v1:0"
+MODEL_SONNET = "global.anthropic.claude-sonnet-4-5-20250929-v1:0"
+MODEL_HAIKU = "global.anthropic.claude-haiku-4-5-20251001-v1:0"
 
 # Optimized system prompt with clear structure and few-shot examples (~1,030 tokens)
 # Used in v2+ agents. Must exceed 1,024 tokens for caching to activate.
