@@ -65,6 +65,7 @@ def get_cognito_token():
             "Content-Type": "application/x-www-form-urlencoded",
         },
         data={"grant_type": "client_credentials", "scope": COGNITO_SCOPE},
+        timeout=30,
     )
     response.raise_for_status()
     return response.json()["access_token"]

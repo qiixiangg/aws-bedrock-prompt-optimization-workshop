@@ -13,7 +13,7 @@ from utils.runtime_helpers import invoke_agent_with_timing
 
 def load_test_scenarios(filepath: str = "data/test_scenarios.json") -> list:
     """Load test scenarios from JSON file."""
-    with open(filepath) as f:
+    with open(filepath, encoding="utf-8") as f:
         return json.load(f)
 
 

@@ -179,7 +179,7 @@ def get_latest_trace_metrics(
 
     # Wait for trace to be ingested (silently)
     if wait_seconds > 0:
-        time.sleep(wait_seconds)
+        time.sleep(wait_seconds)  # nosemgrep: python.lang.best-practice.arbitrary-sleep
 
     # Create client with extended timeout
     langfuse = Langfuse(
@@ -197,7 +197,7 @@ def get_latest_trace_metrics(
             break
         except Exception as e:
             if attempt < max_retries - 1:
-                time.sleep(5)
+                time.sleep(5)  # nosemgrep: python.lang.best-practice.arbitrary-sleep
             else:
                 return {"error": f"Failed after {max_retries} attempts: {e}"}
 
